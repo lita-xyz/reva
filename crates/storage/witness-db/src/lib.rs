@@ -1,7 +1,4 @@
-use reth_primitives::{
-    revm_primitives::{db::DatabaseRef, AccountInfo, Bytecode},
-    B256,
-};
+use reth_primitives::revm_primitives::{db::DatabaseRef, AccountInfo, B256, Bytecode};
 use reth_storage_errors::provider::ProviderError;
 use revm_primitives::{Address, HashMap, U256};
 use serde::{Deserialize, Serialize};

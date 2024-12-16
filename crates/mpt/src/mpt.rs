@@ -20,7 +20,7 @@
 #![allow(dead_code)]
 
 use alloc::boxed::Box;
-use alloy_primitives::{b256, B256};
+use alloy_primitives::{Address, b256, B256};
 use alloy_rlp::Encodable;
 use core::{
     cell::RefCell,
@@ -36,7 +36,6 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error as ThisError;
 
 use anyhow::{Context, Result};
-use reth_primitives::Address;
 
 use super::EthereumState;
 

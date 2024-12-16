@@ -19,6 +19,7 @@ reth-revm.workspace = true
 reth-trie.workspace = true
 reth-chainspec.workspace = true
 reth-optimism-chainspec.workspace = true
+reth-optimism-forks.workspace = true
 
 # revm
 revm-interpreter.workspace = true
@@ -27,3 +28,5 @@ revm-primitives.workspace = true
 
 # alloy
 alloy-rpc-types.workspace = true
+alloy-consensus.workspace = true
+alloy-eips.workspace = true

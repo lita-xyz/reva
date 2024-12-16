@@ -6,13 +6,15 @@
 //! configuring the custom CustomEvmConfig precompiles and instructions.
 
 use crate::ChainVariant;
-use reth_chainspec::ChainSpec;
-use reth_evm::{ConfigureEvm, ConfigureEvmEnv};
+
+use alloy_primitives::{Address, Bytes, U256};
+use reth_evm::{ConfigureEvm, ConfigureEvmEnv, NextBlockEnvAttributes};
 use reth_evm_ethereum::EthEvmConfig;
-use reth_evm_optimism::OptimismEvmConfig;
+use reth_optimism_chainspec::{DecodeError, OpChainSpec};
+use reth_optimism_evm::OpEvmConfig;
 use reth_primitives::{
-    revm_primitives::{CfgEnvWithHandlerCfg, TxEnv},
-    Address, Bytes, Header, TransactionSigned, U256,
+    revm_primitives::{BlockEnv, CfgEnvWithHandlerCfg, TxEnv},
+    Header, TransactionSigned,
 };
 use reth_revm::{
     handler::register::EvmHandler, precompile::PrecompileSpecId, primitives::Env,
@@ -149,37 +151,38 @@ impl ConfigureEvm for CustomEvmConfig {
 }
 
 impl ConfigureEvmEnv for CustomEvmConfig {
+    type Header = Header;
+    type Error = DecodeError;
+
     fn fill_tx_env(&self, tx_env: &mut TxEnv, transaction: &TransactionSigned, sender: Address) {
         match self.0 {
             ChainVariant::Ethereum => {
-                EthEvmConfig::default().fill_tx_env(tx_env, transaction, sender)
+                EthEvmConfig::new(Arc::new(self.0.spec())).fill_tx_env(tx_env, transaction, sender)
             }
             ChainVariant::Optimism => {
-                OptimismEvmConfig::default().fill_tx_env(tx_env, transaction, sender)
+                OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() })).fill_tx_env(tx_env, transaction, sender)
             }
-            ChainVariant::Linea => EthEvmConfig::default().fill_tx_env(tx_env, transaction, sender),
+            ChainVariant::Linea => EthEvmConfig::new(Arc::new(self.0.spec())).fill_tx_env(tx_env, transaction, sender),
         }
     }
 
     fn fill_cfg_env(
         &self,
         cfg_env: &mut CfgEnvWithHandlerCfg,
-        chain_spec: &ChainSpec,
         header: &Header,
         total_difficulty: U256,
     ) {
         match self.0 {
             ChainVariant::Ethereum => {
-                EthEvmConfig::default().fill_cfg_env(cfg_env, chain_spec, header, total_difficulty)
+                EthEvmConfig::new(Arc::new(self.0.spec())).fill_cfg_env(cfg_env, header, total_difficulty)
             }
-            ChainVariant::Optimism => OptimismEvmConfig::default().fill_cfg_env(
+            ChainVariant::Optimism => OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() })).fill_cfg_env(
                 cfg_env,
-                chain_spec,
                 header,
                 total_difficulty,
             ),
             ChainVariant::Linea => {
-                EthEvmConfig::default().fill_cfg_env(cfg_env, chain_spec, header, total_difficulty)
+                EthEvmConfig::new(Arc::new(self.0.spec())).fill_cfg_env(cfg_env, header, total_difficulty)
             }
         }
     }
@@ -192,12 +195,27 @@ impl ConfigureEvmEnv for CustomEvmConfig {
         data: Bytes,
     ) {
         match self.0 {
-            ChainVariant::Ethereum => EthEvmConfig::default()
+            ChainVariant::Ethereum => EthEvmConfig::new(Arc::new(self.0.spec()))
                 .fill_tx_env_system_contract_call(env, caller, contract, data),
-            ChainVariant::Optimism => OptimismEvmConfig::default()
+            ChainVariant::Optimism => OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() }))
                 .fill_tx_env_system_contract_call(env, caller, contract, data),
-            ChainVariant::Linea => EthEvmConfig::default()
+            ChainVariant::Linea => EthEvmConfig::new(Arc::new(self.0.spec()))
                 .fill_tx_env_system_contract_call(env, caller, contract, data),
+        }
+    }
+
+    fn next_cfg_and_block_env(
+        &self,
+        parent: &Self::Header,
+        attributes: NextBlockEnvAttributes,
+    ) -> Result<(CfgEnvWithHandlerCfg, BlockEnv), Self::Error> {
+        match self.0 {
+            ChainVariant::Ethereum => EthEvmConfig::new(Arc::new(self.0.spec()))
+                .next_cfg_and_block_env(parent, attributes).map_err(|_| DecodeError::InsufficientData),
+            ChainVariant::Optimism => OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() }))
+                .next_cfg_and_block_env(parent, attributes),
+            ChainVariant::Linea => EthEvmConfig::new(Arc::new(self.0.spec()))
+                .next_cfg_and_block_env(parent, attributes).map_err(|_| DecodeError::InsufficientData),
         }
     }
 }

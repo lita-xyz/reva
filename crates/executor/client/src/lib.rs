@@ -7,18 +7,21 @@ pub mod custom;
 
 use std::{borrow::BorrowMut, fmt::Display};
 
+use alloy_eips::eip7685::Requests;
+use alloy_primitives::Bloom;
 use custom::CustomEvmConfig;
 use eyre::eyre;
 use io::ClientExecutorInput;
 use reth_chainspec::ChainSpec;
 use reth_errors::ProviderError;
 use reth_ethereum_consensus::validate_block_post_execution as validate_block_post_execution_ethereum;
-use reth_evm::execute::{BlockExecutionOutput, BlockExecutorProvider, Executor};
-use reth_evm_ethereum::execute::EthExecutorProvider;
-use reth_evm_optimism::OpExecutorProvider;
+use reth_evm::execute::{BlockExecutionStrategyFactory, BlockExecutionOutput, BasicBlockExecutor, Executor};
+use reth_evm_ethereum::execute::EthExecutionStrategyFactory;
+use reth_optimism_chainspec::OpChainSpec;
+use reth_optimism_evm::OpExecutionStrategyFactory;
 use reth_execution_types::ExecutionOutcome;
 use reth_optimism_consensus::validate_block_post_execution as validate_block_post_execution_optimism;
-use reth_primitives::{proofs, Block, BlockWithSenders, Bloom, Header, Receipt, Receipts, Request};
+use reth_primitives::{proofs, Block, BlockWithSenders, Header, Receipt, Receipts};
 use revm::{db::CacheDB, Database};
 use revm_primitives::{address, U256};
 
@@ -52,7 +55,7 @@ pub trait Variant {
         block: &BlockWithSenders,
         chain_spec: &ChainSpec,
         receipts: &[Receipt],
-        requests: &[Request],
+        requests: &Requests,
     ) -> eyre::Result<()>;
 
     fn pre_process_block(block: &Block) -> Block {
@@ -90,6 +93,15 @@ impl ChainVariant {
             ChainVariant::Ethereum => CHAIN_ID_ETH_MAINNET,
             ChainVariant::Optimism => CHAIN_ID_OP_MAINNET,
             ChainVariant::Linea => CHAIN_ID_LINEA_MAINNET,
+        }
+    }
+
+    /// Returns the chain spec for the given variant.
+    pub fn spec(&self) -> ChainSpec {
+        match self {
+            ChainVariant::Ethereum => EthereumVariant::spec(),
+            ChainVariant::Optimism => OptimismVariant::spec(),
+            ChainVariant::Linea => LineaVariant::spec(),
         }
     }
 }
@@ -158,18 +170,19 @@ impl ClientExecutor {
         // Note: the receipts root and gas used are verified by `validate_block_post_execution`.
         let mut header = input.current_block.header.clone();
         header.parent_hash = input.parent_header().hash_slow();
-        header.ommers_hash = proofs::calculate_ommers_root(&input.current_block.ommers);
+        header.ommers_hash = proofs::calculate_ommers_root(&input.current_block.body.ommers);
         header.state_root = input.current_block.state_root;
-        header.transactions_root = proofs::calculate_transaction_root(&input.current_block.body);
+        header.transactions_root = proofs::calculate_transaction_root(&input.current_block.body.transactions);
         header.receipts_root = input.current_block.header.receipts_root;
         header.withdrawals_root = input
             .current_block
+            .body
             .withdrawals
             .clone()
             .map(|w| proofs::calculate_withdrawals_root(w.into_inner().as_slice()));
         header.logs_bloom = logs_bloom;
-        header.requests_root =
-            input.current_block.requests.as_ref().map(|r| proofs::calculate_requests_root(&r.0));
+        header.requests_hash =
+            input.current_block.header.requests_hash;
 
         Ok(header)
     }
@@ -188,11 +201,13 @@ impl Variant for EthereumVariant {
     where
         DB: Database<Error: Into<ProviderError> + Display>,
     {
-        Ok(EthExecutorProvider::new(
-            Self::spec().into(),
-            CustomEvmConfig::from_variant(ChainVariant::Ethereum),
+        Ok(BasicBlockExecutor::new(
+            EthExecutionStrategyFactory::new(
+                Self::spec().into(),
+                CustomEvmConfig::from_variant(ChainVariant::Ethereum),
+            )
+            .create_strategy(cache_db)
         )
-        .executor(cache_db)
         .execute((executor_block_input, executor_difficulty).into())?)
     }
 
@@ -200,7 +215,7 @@ impl Variant for EthereumVariant {
         block: &BlockWithSenders,
         chain_spec: &ChainSpec,
         receipts: &[Receipt],
-        requests: &[Request],
+        requests: &Requests,
     ) -> eyre::Result<()> {
         Ok(validate_block_post_execution_ethereum(block, chain_spec, receipts, requests)?)
     }
@@ -219,11 +234,13 @@ impl Variant for OptimismVariant {
     where
         DB: Database<Error: Into<ProviderError> + Display>,
     {
-        Ok(OpExecutorProvider::new(
-            Self::spec().into(),
-            CustomEvmConfig::from_variant(ChainVariant::Optimism),
+        Ok(BasicBlockExecutor::new(
+            OpExecutionStrategyFactory::new(
+                OpChainSpec { inner: Self::spec() }.into(),
+                CustomEvmConfig::from_variant(ChainVariant::Optimism),
+            )
+            .create_strategy(cache_db)
         )
-        .executor(cache_db)
         .execute((executor_block_input, executor_difficulty).into())?)
     }
 
@@ -231,7 +248,7 @@ impl Variant for OptimismVariant {
         block: &BlockWithSenders,
         chain_spec: &ChainSpec,
         receipts: &[Receipt],
-        _requests: &[Request],
+        _requests: &Requests,
     ) -> eyre::Result<()> {
         Ok(validate_block_post_execution_optimism(block, chain_spec, receipts)?)
     }
@@ -250,11 +267,13 @@ impl Variant for LineaVariant {
     where
         DB: Database<Error: Into<ProviderError> + Display>,
     {
-        Ok(EthExecutorProvider::new(
-            Self::spec().into(),
-            CustomEvmConfig::from_variant(ChainVariant::Linea),
+        Ok(BasicBlockExecutor::new(
+            EthExecutionStrategyFactory::new(
+                Self::spec().into(),
+                CustomEvmConfig::from_variant(ChainVariant::Linea),
+            )
+            .create_strategy(cache_db)
         )
-        .executor(cache_db)
         .execute((executor_block_input, executor_difficulty).into())?)
     }
 
@@ -262,7 +281,7 @@ impl Variant for LineaVariant {
         block: &BlockWithSenders,
         chain_spec: &ChainSpec,
         receipts: &[Receipt],
-        requests: &[Request],
+        requests: &Requests,
     ) -> eyre::Result<()> {
         Ok(validate_block_post_execution_ethereum(block, chain_spec, receipts, requests)?)
     }

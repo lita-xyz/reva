@@ -1,8 +1,9 @@
 use std::{collections::HashMap, iter::once};
 
+use alloy_primitives::{Address, B256, U256};
 use eyre::Result;
 use itertools::Itertools;
-use reth_primitives::{revm_primitives::AccountInfo, Address, Block, Header, B256, U256};
+use reth_primitives::{revm_primitives::AccountInfo, Block, Header};
 use reth_trie::TrieAccount;
 use revm_primitives::{keccak256, Bytecode};
 use rsp_mpt::EthereumState;

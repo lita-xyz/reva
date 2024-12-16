@@ -30,7 +30,8 @@ reth-storage-errors.workspace = true
 reth-trie.workspace = true
 reth-evm.workspace = true
 reth-evm-ethereum.workspace = true
-reth-evm-optimism.workspace = true
+reth-optimism-chainspec.workspace = true
+reth-optimism-evm.workspace = true
 reth-errors.workspace = true
 reth-chainspec.workspace = true
 reth-revm.workspace = true
@@ -40,6 +41,7 @@ revm.workspace = true
 revm-primitives.workspace = true
 
 # alloy
+alloy-eips.workspace = true
 alloy-primitives.workspace = true
 alloy-rlp.workspace = true
 itertools = "0.13.0"
@@ -47,3 +49,5 @@ url.workspace = true
 futures.workspace = true
 
 [dev-dependencies]
+
+

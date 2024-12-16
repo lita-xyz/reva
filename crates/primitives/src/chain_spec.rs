@@ -1,8 +1,10 @@
+use alloy_consensus::constants::MAINNET_GENESIS_HASH;
+use alloy_eips::eip1559::ETHEREUM_BLOCK_GAS_LIMIT;
 use reth_chainspec::{
     BaseFeeParams, BaseFeeParamsKind, Chain, ChainHardforks, ChainSpec, DepositContract,
-    EthereumHardfork, ForkCondition, OptimismHardfork,
+    EthereumHardfork, ForkCondition, once_cell_set,
 };
-use reth_primitives::{constants::ETHEREUM_BLOCK_GAS_LIMIT, MAINNET_GENESIS_HASH};
+use reth_optimism_forks::OptimismHardfork;
 use revm_primitives::{address, b256, U256};
 
 /// Returns the [ChainSpec] for Ethereum mainnet.
@@ -14,7 +16,8 @@ pub fn mainnet() -> ChainSpec {
         chain: Chain::mainnet(),
         // We don't need the genesis state. Using default to save cycles.
         genesis: Default::default(),
-        genesis_hash: Some(MAINNET_GENESIS_HASH),
+        genesis_header: Default::default(),
+        genesis_hash: once_cell_set(MAINNET_GENESIS_HASH),
         paris_block_and_final_difficulty: Some((0, U256::ZERO)),
         // For some reasons a state root mismatch error arises if we don't force activate everything
         // before and including Shanghai.
@@ -62,7 +65,8 @@ pub fn op_mainnet() -> ChainSpec {
         chain: Chain::optimism_mainnet(),
         // We don't need the genesis state. Using default to save cycles.
         genesis: Default::default(),
-        genesis_hash: Some(b256!(
+        genesis_header: Default::default(),
+        genesis_hash: once_cell_set(b256!(
             "7ca38a1916c42007829c55e69d3e9a73265554b586a499015373241b8a3fa48b"
         )),
         paris_block_and_final_difficulty: Some((0, U256::ZERO)),
@@ -88,6 +92,7 @@ pub fn linea_mainnet() -> ChainSpec {
         chain: Chain::linea(),
         // We don't need the genesis state. Using default to save cycles.
         genesis: Default::default(),
+        genesis_header: Default::default(),
         paris_block_and_final_difficulty: Some((0, U256::ZERO)),
         // For some reasons a state root mismatch error arises if we don't force activate everything
         // before and including Shanghai.
