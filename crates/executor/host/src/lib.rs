@@ -1,10 +1,11 @@
 use std::{collections::BTreeSet, marker::PhantomData};
 
+use alloy_primitives::{B256, Bloom};
 use alloy_provider::{network::AnyNetwork, Provider};
 use alloy_transport::Transport;
 use eyre::{eyre, Ok};
 use reth_execution_types::ExecutionOutcome;
-use reth_primitives::{proofs, Block, Bloom, Receipts, B256};
+use reth_primitives::{proofs, Block, Receipts};
 use revm::db::CacheDB;
 use rsp_client_executor::{
     io::ClientExecutorInput, ChainVariant, EthereumVariant, LineaVariant, OptimismVariant, Variant,
@@ -75,7 +76,7 @@ impl<T: Transport + Clone, P: Provider<T, AnyNetwork> + Clone> HostExecutor<T, P
         tracing::info!(
             "executing the block and with rpc db: block_number={}, transaction_count={}",
             block_number,
-            current_block.body.len()
+            current_block.body.transactions.len()
         );
 
         let executor_block_input = V::pre_process_block(&current_block)
@@ -172,17 +173,18 @@ impl<T: Transport + Clone, P: Provider<T, AnyNetwork> + Clone> HostExecutor<T, P
         // Note: the receipts root and gas used are verified by `validate_block_post_execution`.
         let mut header = current_block.header.clone();
         header.parent_hash = previous_block.hash_slow();
-        header.ommers_hash = proofs::calculate_ommers_root(&current_block.ommers);
+        header.ommers_hash = proofs::calculate_ommers_root(&current_block.body.ommers);
         header.state_root = current_block.state_root;
-        header.transactions_root = proofs::calculate_transaction_root(&current_block.body);
+        header.transactions_root = proofs::calculate_transaction_root(&current_block.body.transactions);
         header.receipts_root = current_block.header.receipts_root;
         header.withdrawals_root = current_block
+            .body
             .withdrawals
             .clone()
             .map(|w| proofs::calculate_withdrawals_root(w.into_inner().as_slice()));
         header.logs_bloom = logs_bloom;
-        header.requests_root =
-            current_block.requests.as_ref().map(|r| proofs::calculate_requests_root(&r.0));
+        header.requests_hash =
+            current_block.header.requests_hash;
 
         // Assert the derived header is correct.
         assert_eq!(header.hash_slow(), current_block.header.hash_slow(), "header mismatch");

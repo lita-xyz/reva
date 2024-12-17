@@ -18,8 +18,6 @@ log = { version = "0.4", features = ["max_level_off", "release_max_level_off"] }
 tracing = { version = "0.1", features = ["max_level_off", "release_max_level_off"] }
 
 [patch.crates-io]
-# Precompile patches
-
 wait-timeout = { git = "https://github.com/lita-xyz/wait-timeout", branch = "0.2.0-valida" }
 rusty-fork = { git = "https://github.com/lita-xyz/rusty-fork", branch = "0.3.0-valida" }
 is-terminal = { git = "https://github.com/lita-xyz/is-terminal", branch = "0.4.13-valida" }

@@ -4,16 +4,16 @@ use std::{
     marker::PhantomData,
 };
 
+use alloy_json_rpc::{RequestPacket, ResponsePacket};
+use alloy_primitives::map::{DefaultHashBuilder, HashMap};
 use alloy_provider::{network::AnyNetwork, Provider};
 use alloy_rpc_types::BlockId;
-use alloy_transport::Transport;
+use alloy_transport::{Transport, TransportError, TransportFut};
 use reth_primitives::{
-    revm_primitives::{AccountInfo, Bytecode},
-    Address, B256, U256,
+    revm_primitives::{AccountInfo, Address, B256, Bytecode, U256},
 };
 use reth_revm::DatabaseRef;
 use reth_storage_errors::{db::DatabaseError, provider::ProviderError};
-use revm_primitives::HashMap;
 
 /// A database that fetches data from a [Provider] over a [Transport].
 #[derive(Debug, Clone)]
@@ -43,14 +43,23 @@ pub enum RpcDbError {
     PreimageNotFound,
 }
 
-impl<T: Transport + Clone, P: Provider<T, AnyNetwork> + Clone> RpcDb<T, P> {
+impl<T, P> RpcDb<T, P>
+where
+    T: tower::Service<
+        RequestPacket,
+        Response = ResponsePacket,
+        Error = TransportError,
+        Future = TransportFut<'static>,
+    > + Send + Sync + Clone + 'static,
+    P: Provider<T, AnyNetwork> + Clone
+ {
     /// Create a new [`RpcDb`].
     pub fn new(provider: P, block: u64) -> Self {
         RpcDb {
             provider,
             block: block.into(),
-            accounts: RefCell::new(HashMap::new()),
-            storage: RefCell::new(HashMap::new()),
+            accounts: RefCell::new(HashMap::with_hasher(DefaultHashBuilder::default())),
+            storage: RefCell::new(HashMap::with_hasher(DefaultHashBuilder::default())),
             oldest_ancestor: RefCell::new(block),
             _phantom: PhantomData,
         }

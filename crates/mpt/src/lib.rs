@@ -1,6 +1,7 @@
+use alloy_primitives::map::HashMap;
 use eyre::Result;
 use reth_trie::{AccountProof, HashedPostState, TrieAccount};
-use revm::primitives::{Address, HashMap, B256};
+use revm_primitives::{Address, B256};
 use serde::{Deserialize, Serialize};
 
 /// Module containing MPT code adapted from `zeth`.

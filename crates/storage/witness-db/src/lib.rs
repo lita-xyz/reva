@@ -1,6 +1,7 @@
+use alloy_primitives::map::HashMap;
 use reth_primitives::revm_primitives::{db::DatabaseRef, AccountInfo, B256, Bytecode};
 use reth_storage_errors::provider::ProviderError;
-use revm_primitives::{Address, HashMap, U256};
+use revm_primitives::{Address, U256};
 use serde::{Deserialize, Serialize};
 
 /// A database used to witness state inside the zkVM.

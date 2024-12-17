@@ -101,21 +101,24 @@ revm-precompile = { version = "=11.0.1", default-features = false }
 
 # alloy
 alloy-primitives = { version = "0.8.4", features = ["sha3-keccak"] }
-alloy-provider = { version = "0.3", default-features = false, features = [
+alloy-provider = { version = "0.5.4", default-features = false, features = [
     "reqwest",
     "reqwest-rustls-tls",
 ] }
 alloy-rpc-types = { version = "0.5.4", default-features = false, features = [
     "eth",
 ] }
+alloy-json-rpc = "0.5.4"
 alloy-rlp = "0.3.4"
 alloy-consensus = { version = "0.5.4", default-features = false }
-alloy-transport = { version = "0.3" }
-alloy-transport-http = { version = "0.3", features = [
+alloy-transport = { version = "0.5.4" }
+alloy-transport-http = { version = "0.5.4", features = [
     "reqwest-rustls-tls",
 ], default-features = false }
 alloy-eips = { version = "0.5.4", default-features = false }
 alloy-trie = "0.5.0"
+
+tower = { version = "0.5", features = ["util"] }
 
 [workspace.lints]
 rust.missing_debug_implementations = "warn"
@@ -123,3 +126,15 @@ rust.unreachable_pub = "warn"
 rust.unused_must_use = "deny"
 rust.rust_2018_idioms = { level = "deny", priority = -1 }
 rustdoc.all = "warn"
+
+[patch.crates-io]
+wait-timeout = { git = "https://github.com/lita-xyz/wait-timeout", branch = "0.2.0-valida" }
+rusty-fork = { git = "https://github.com/lita-xyz/rusty-fork", branch = "0.3.0-valida" }
+is-terminal = { git = "https://github.com/lita-xyz/is-terminal", branch = "0.4.13-valida" }
+cc = { git = "https://github.com/lita-xyz/cc-rs.git", branch = "1.1.18-delendum" }
+blst = { git = "https://github.com/lita-xyz/blst.git", branch = "0.3.13-delendum" }
+c-kzg = { git = "https://github.com/lita-xyz/c-kzg-4844.git", branch = "1.0.3-delendum" }
+zstd-sys = { git = "https://github.com/lita-xyz/zstd-rs.git", branch = "zstd-sys-2.0.13-delendum" }
+proptest = { git = "https://github.com/lita-xyz/proptest", branch = "1.5.0-valida" }
+pprof = { git = "https://github.com/lita-xyz/pprof-rs", branch = "0.13.0-valida" }
+alloy-primitives = { git = "https://github.com/lewis1revill/core", branch = "0.8.15-valida" }

@@ -1,6 +1,6 @@
-use std::{collections::HashMap, iter::once};
+use std::iter::once;
 
-use alloy_primitives::{Address, B256, U256};
+use alloy_primitives::{Address, B256, map::{DefaultHashBuilder, HashMap}, U256};
 use eyre::Result;
 use itertools::Itertools;
 use reth_primitives::{revm_primitives::AccountInfo, Block, Header};
@@ -109,8 +109,8 @@ pub trait WitnessInput {
         let bytecodes_by_hash =
             self.bytecodes().map(|code| (code.hash_slow(), code)).collect::<HashMap<_, _>>();
 
-        let mut accounts = HashMap::new();
-        let mut storage = HashMap::new();
+        let mut accounts = HashMap::with_hasher(DefaultHashBuilder::default());
+        let mut storage = HashMap::with_hasher(DefaultHashBuilder::default());
         for (&address, slots) in self.state_requests() {
             let hashed_address = keccak256(address);
             let hashed_address = hashed_address.as_slice();
@@ -137,7 +137,7 @@ pub trait WitnessInput {
             );
 
             if !slots.is_empty() {
-                let mut address_storage = HashMap::new();
+                let mut address_storage = HashMap::with_hasher(DefaultHashBuilder::default());
 
                 let storage_trie = state
                     .storage_tries
@@ -156,7 +156,7 @@ pub trait WitnessInput {
         }
 
         // Verify and build block hashes
-        let mut block_hashes: HashMap<u64, B256> = HashMap::new();
+        let mut block_hashes: HashMap<u64, B256> = HashMap::with_hasher(DefaultHashBuilder::default());
         for (child_header, parent_header) in self.headers().tuple_windows() {
             if parent_header.number != child_header.number - 1 {
                 eyre::bail!("non-consecutive blocks");
