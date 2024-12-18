@@ -41,12 +41,12 @@ rayon = "1.10.0"
 rlp = "0.5.2"
 
 # workspace
-rsp-rpc-db = { path = "./crates/storage/rpc-db" }
-rsp-witness-db = { path = "./crates/storage/witness-db" }
-rsp-client-executor = { path = "./crates/executor/client" }
-rsp-host-executor = { path = "./crates/executor/host" }
-rsp-mpt = { path = "./crates/mpt" }
-rsp-primitives = { path = "./crates/primitives" }
+reva-rpc-db = { path = "./crates/storage/rpc-db" }
+reva-witness-db = { path = "./crates/storage/witness-db" }
+reva-client-executor = { path = "./crates/executor/client" }
+reva-host-executor = { path = "./crates/executor/host" }
+reva-mpt = { path = "./crates/mpt" }
+reva-primitives = { path = "./crates/primitives" }
 
 # reth
 reth-primitives = { git = "https://github.com/lita-xyz/reth", branch = "ljr-cargo-test", default-features = false, features = [

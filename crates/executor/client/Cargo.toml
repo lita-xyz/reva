@@ -1,5 +1,5 @@
 [package]
-name = "rsp-client-executor"
+name = "reva-client-executor"
 description = ""
 version.workspace = true
 edition.workspace = true
@@ -17,9 +17,9 @@ serde.workspace = true
 tokio.workspace = true
 
 # workspace
-rsp-witness-db.workspace = true
-rsp-primitives.workspace = true
-rsp-mpt.workspace = true
+reva-witness-db.workspace = true
+reva-primitives.workspace = true
+reva-mpt.workspace = true
 
 # reth
 reth-ethereum-consensus.workspace = true

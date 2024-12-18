@@ -190,7 +190,7 @@ impl ClientExecutor {
 
 impl Variant for EthereumVariant {
     fn spec() -> ChainSpec {
-        rsp_primitives::chain_spec::mainnet()
+        reva_primitives::chain_spec::mainnet()
     }
 
     fn execute<DB>(
@@ -223,7 +223,7 @@ impl Variant for EthereumVariant {
 
 impl Variant for OptimismVariant {
     fn spec() -> ChainSpec {
-        rsp_primitives::chain_spec::op_mainnet()
+        reva_primitives::chain_spec::op_mainnet()
     }
 
     fn execute<DB>(
@@ -256,7 +256,7 @@ impl Variant for OptimismVariant {
 
 impl Variant for LineaVariant {
     fn spec() -> ChainSpec {
-        rsp_primitives::chain_spec::linea_mainnet()
+        reva_primitives::chain_spec::linea_mainnet()
     }
 
     fn execute<DB>(

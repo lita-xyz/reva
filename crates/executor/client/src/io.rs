@@ -6,8 +6,8 @@ use itertools::Itertools;
 use reth_primitives::{revm_primitives::AccountInfo, Block, Header};
 use reth_trie::TrieAccount;
 use revm_primitives::{keccak256, Bytecode};
-use rsp_mpt::EthereumState;
-use rsp_witness_db::WitnessDb;
+use reva_mpt::EthereumState;
+use reva_witness_db::WitnessDb;
 use serde::{Deserialize, Serialize};
 
 /// The input for the client to execute a block and fully verify the STF (state transition

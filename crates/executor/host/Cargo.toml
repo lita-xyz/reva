@@ -1,5 +1,5 @@
 [package]
-name = "rsp-host-executor"
+name = "reva-host-executor"
 description = ""
 version.workspace = true
 edition.workspace = true
@@ -19,11 +19,11 @@ tokio.workspace = true
 tracing.workspace = true
 
 # workspace
-rsp-rpc-db.workspace = true
-rsp-witness-db.workspace = true
-rsp-client-executor.workspace = true
-rsp-mpt = { workspace = true, features = ["preimage_context"] }
-rsp-primitives.workspace = true
+reva-rpc-db.workspace = true
+reva-witness-db.workspace = true
+reva-client-executor.workspace = true
+reva-mpt = { workspace = true, features = ["preimage_context"] }
+reva-primitives.workspace = true
 
 # reth
 reth-codecs.workspace = true

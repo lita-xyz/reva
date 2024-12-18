@@ -1,10 +1,10 @@
 use alloy_provider::ReqwestProvider;
 use clap::Parser;
-use rsp_client_executor::{
+use reva_client_executor::{
     ChainVariant, CHAIN_ID_ETH_MAINNET, CHAIN_ID_LINEA_MAINNET,
     CHAIN_ID_OP_MAINNET,
 };
-use rsp_host_executor::HostExecutor;
+use reva_host_executor::HostExecutor;
 use std::io::Write;
 use std::path::Path;
 use url::Url;

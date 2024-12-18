@@ -1,7 +1,7 @@
 #![no_main]
 valida_rs::entrypoint!(main);
 
-use rsp_client_executor::{io::ClientExecutorInput, ClientExecutor, OptimismVariant};
+use reva_client_executor::{io::ClientExecutorInput, ClientExecutor, OptimismVariant};
 
 pub fn main() {
     // Read the input.

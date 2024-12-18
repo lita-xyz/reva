@@ -1,7 +1,7 @@
 #![no_main]
 valida_rs::entrypoint!(main);
 
-use rsp_client_executor::{io::ClientExecutorInput, ClientExecutor, EthereumVariant};
+use reva_client_executor::{io::ClientExecutorInput, ClientExecutor, EthereumVariant};
 
 pub fn main() {
     // Read the input.

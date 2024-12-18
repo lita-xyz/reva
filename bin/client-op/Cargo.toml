@@ -1,6 +1,6 @@
 [workspace.package]
 [package]
-name = "rsp-client-op"
+name = "reva-client-op"
 description = ""
 edition = "2021"
 
@@ -8,7 +8,7 @@ edition = "2021"
 serde_json = "1.0.94"
 
 # workspace
-rsp-client-executor = { path = "../../crates/executor/client" }
+reva-client-executor = { path = "../../crates/executor/client" }
 
 # valida-rs
 valida-rs = { git = "https://github.com/lita-xyz/valida-rs", branch = "main" }

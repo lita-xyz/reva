@@ -1,9 +1,9 @@
 use alloy_provider::ReqwestProvider;
-use rsp_client_executor::{
+use reva_client_executor::{
     io::ClientExecutorInput, ChainVariant, ClientExecutor, EthereumVariant, LineaVariant,
     OptimismVariant, Variant,
 };
-use rsp_host_executor::HostExecutor;
+use reva_host_executor::HostExecutor;
 use tracing_subscriber::{
     filter::EnvFilter, fmt, prelude::__tracing_subscriber_SubscriberExt, util::SubscriberInitExt,
 };

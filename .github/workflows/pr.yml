@@ -123,8 +123,8 @@ jobs:
 
       - name: "Set up test fixture"
         run: |
-          git clone https://github.com/succinctlabs/rsp-tests --branch 2024-09-11 --depth 1 ../rsp-tests
-          cd ../rsp-tests/
+          git clone https://github.com/succinctlabs/reva-tests --branch 2024-09-11 --depth 1 ../reva-tests
+          cd ../reva-tests/
           docker compose up -d
 
       - name: "Use local test fixture"

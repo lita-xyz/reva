@@ -1,5 +1,5 @@
 [package]
-name = "rsp-witness-db"
+name = "reva-witness-db"
 description = ""
 version.workspace = true
 edition.workspace = true
@@ -11,7 +11,7 @@ repository.workspace = true
 serde.workspace = true
 
 # workspace
-rsp-primitives.workspace = true
+reva-primitives.workspace = true
 
 # reth
 reth-primitives.workspace = true

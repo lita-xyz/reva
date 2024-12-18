@@ -7,12 +7,12 @@ use eyre::{eyre, Ok};
 use reth_execution_types::ExecutionOutcome;
 use reth_primitives::{proofs, Block, Receipts};
 use revm::db::CacheDB;
-use rsp_client_executor::{
+use reva_client_executor::{
     io::ClientExecutorInput, ChainVariant, EthereumVariant, LineaVariant, OptimismVariant, Variant,
 };
-use rsp_mpt::EthereumState;
-use rsp_primitives::account_proof::eip1186_proof_to_account_proof;
-use rsp_rpc_db::RpcDb;
+use reva_mpt::EthereumState;
+use reva_primitives::account_proof::eip1186_proof_to_account_proof;
+use reva_rpc_db::RpcDb;
 
 /// An executor that fetches data from a [Provider] to execute blocks in the [ClientExecutor].
 #[derive(Debug, Clone)]

@@ -1,5 +1,5 @@
 [package]
-name = "rsp-rpc-db"
+name = "reva-rpc-db"
 description = ""
 version.workspace = true
 edition.workspace = true
@@ -15,7 +15,7 @@ tracing.workspace = true
 rayon.workspace = true
 
 # workspace
-rsp-primitives.workspace = true
+reva-primitives.workspace = true
 
 # reth
 reth-primitives.workspace = true
