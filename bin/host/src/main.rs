@@ -1,10 +1,11 @@
 use alloy_provider::ReqwestProvider;
 use clap::Parser;
 use rsp_client_executor::{
-    io::ClientExecutorInput, ChainVariant, CHAIN_ID_ETH_MAINNET, CHAIN_ID_LINEA_MAINNET,
+    ChainVariant, CHAIN_ID_ETH_MAINNET, CHAIN_ID_LINEA_MAINNET,
     CHAIN_ID_OP_MAINNET,
 };
 use rsp_host_executor::HostExecutor;
+use std::io::Write;
 use std::path::Path;
 use url::Url;
 
@@ -64,8 +65,9 @@ async fn main() {
 
             let input_path = input_folder.join(format!("{}.bin", args.block_number));
             let mut cache_file = std::fs::File::create(input_path).unwrap();
-
-            bincode::serialize_into(&mut cache_file, &client_input).unwrap();
+            cache_file.write_all(
+                &serde_json::ser::to_vec(&client_input).expect("unable to serialize input").as_slice()
+            ).expect("unable to write to file");
         }
         None => {
             panic!("RPC URL not provided")

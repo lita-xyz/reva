@@ -6,7 +6,7 @@ use rsp_client_executor::{io::ClientExecutorInput, ClientExecutor, EthereumVaria
 pub fn main() {
     // Read the input.
     let input = valida_rs::io::read().unwrap();
-    let input = bincode::deserialize::<ClientExecutorInput>(&input).unwrap();
+    let input = serde_json::de::from_slice::<ClientExecutorInput>(&input.as_slice()).unwrap();
 
     // Execute the block.
     let executor = ClientExecutor;
