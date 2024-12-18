@@ -6,9 +6,9 @@ A minimal implementation of generating zero-knowledge proofs of EVM block execut
 >
 > This repository is still an active work-in-progress and is not audited or meant for production usage.
 
-> [!Attribution]
->
-> The basis for this work is the existing ['RSP' project](https://github.com/succinctlabs/rsp) by Succinct Labs.
+### Attribution
+
+The basis for this work is the existing ['RSP' project](https://github.com/succinctlabs/rsp) by Succinct Labs.
 
 ## Getting Started
 
