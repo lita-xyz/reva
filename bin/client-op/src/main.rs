@@ -1,12 +1,12 @@
 #![no_main]
-sp1_zkvm::entrypoint!(main);
+valida_rs::entrypoint!(main);
 
 use rsp_client_executor::{io::ClientExecutorInput, ClientExecutor, OptimismVariant};
 
 pub fn main() {
     // Read the input.
-    let input = sp1_zkvm::io::read_vec();
-    let input = bincode::deserialize::<ClientExecutorInput>(&input).unwrap();
+    let input = valida_rs::io::read().unwrap();
+    let input = serde_json::de::from_slice::<ClientExecutorInput>(&input.as_slice()).unwrap();
 
     // Execute the block.
     let executor = ClientExecutor;
@@ -14,5 +14,5 @@ pub fn main() {
     let block_hash = header.hash_slow();
 
     // Commit the block hash.
-    sp1_zkvm::io::commit(&block_hash);
+    println!("{:?}", block_hash);
 }
