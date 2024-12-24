@@ -85,9 +85,10 @@ jobs:
       - name: "Checkout sources"
         uses: "actions/checkout@v4"
 
-      - name: "Dwonload Valida"
+      - name: "Download Valida"
         run: |
           wget https://github.com/lita-xyz/valida-releases/releases/latest/download/llvm-valida-v0.7.0-alpha-linux-x86_64.tar.xz
+          pwd
 
       - name: "Install Valida"
         run: |
