@@ -85,15 +85,23 @@ jobs:
       - name: "Checkout sources"
         uses: "actions/checkout@v4"
 
+      - name: "Setup nightly toolchain"
+        uses: "actions-rs/toolchain@v1"
+        with:
+          toolchain: "nightly"
+          profile: "minimal"
+
       - name: "Download Valida"
         run: |
-          wget https://github.com/lita-xyz/valida-releases/releases/latest/download/llvm-valida-v0.7.0-alpha-linux-x86_64.tar.xz
+          wget -nv https://github.com/lita-xyz/valida-releases/releases/latest/download/llvm-valida-v0.7.0-alpha-linux-x86_64.tar.xz
           pwd
+          ls
 
       - name: "Install Valida"
         run: |
+          mkdir -p /home/runner/.local/bin
           tar -xf llvm-valida-v0.7.0-alpha-linux-x86_64.tar.xz
-          cd valida-toolchain
+          cd /home/runner/work/reva/reva/vali a-toolchain
           sudo ./install.sh
 
       # This step is necessary to generate the ELF files.
