@@ -100,10 +100,13 @@ jobs:
         run: |
           mkdir -p /home/runner/.local/bin
           tar -xf llvm-valida-v0.7.0-alpha-linux-x86_64.tar.xz
-          cd /home/runner/work/reva/reva/valida-toolchain
-          sudo ./install.sh || 
+          cd ./valida-toolchain
+          sudo ./install.sh
           rustup toolchain link valida /valida-toolchain
           rustup toolchain list
+
+      - name: Setup interactive ssh session
+        uses: Warpbuilds/action-debugger@v1.3
 
       # This step is necessary to generate the ELF files.
       - name: "Build"
