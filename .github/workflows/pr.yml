@@ -98,8 +98,7 @@ jobs:
         run: |
           mkdir -p /home/runner/.local/bin
           tar -xf llvm-valida-v0.7.0-alpha-linux-x86_64.tar.xz
-          pwd
-          ls
+          rustup --version
           cd /home/runner/work/reva/reva/valida-toolchain
           sudo ./install.sh
 
