@@ -103,6 +103,7 @@ jobs:
           cd /home/runner/work/reva/reva/valida-toolchain
           sudo ./install.sh || 
           rustup toolchain link valida /valida-toolchain
+          rustup toolchain list
 
       # This step is necessary to generate the ELF files.
       - name: "Build"
