@@ -100,7 +100,7 @@ jobs:
           tar -xf llvm-valida-v0.7.0-alpha-linux-x86_64.tar.xz
           pwd
           ls
-          cd /home/runner/work/reva/valida-toolchain
+          cd /home/runner/work/reva/reva/valida-toolchain
           sudo ./install.sh
 
       # This step is necessary to generate the ELF files.
