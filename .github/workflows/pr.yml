@@ -85,10 +85,12 @@ jobs:
       - name: "Checkout sources"
         uses: "actions/checkout@v4"
 
-      - name: "Setup nightly toolchain"
-        uses: "actions-rs/toolchain@v1"
+      - name: Install Rust nightly toolchain
+        uses: actions-rs/toolchain@v1
         with:
-          toolchain: "nightly"
+          profile: minimal
+          toolchain: nightly
+          components: clippy
 
       - name: "Download Valida"
         run: |
@@ -98,9 +100,8 @@ jobs:
         run: |
           mkdir -p /home/runner/.local/bin
           tar -xf llvm-valida-v0.7.0-alpha-linux-x86_64.tar.xz
-          rustup --version
           cd /home/runner/work/reva/reva/valida-toolchain
-          sudo ./install.sh
+          sudo -E ./install.sh
 
       # This step is necessary to generate the ELF files.
       - name: "Build"
