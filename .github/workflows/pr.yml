@@ -85,6 +85,10 @@ jobs:
       - name: "Checkout sources"
         uses: "actions/checkout@v4"
 
+      - name:  "remove rust"
+        run: |     
+          rustup self uninstall
+
       - name: Install Rust nightly toolchain
         uses: actions-rs/toolchain@v1
         with:
