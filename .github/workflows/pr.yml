@@ -108,6 +108,9 @@ jobs:
           sudo ./install.sh
           rustup toolchain link valida /valida-toolchain
 
+      - name: Setup interactive ssh session
+        uses: Warpbuilds/action-debugger@v1.3
+
       # This step is necessary to generate the ELF files.
       - name: "Build"
         run: |
