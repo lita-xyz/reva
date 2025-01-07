@@ -60,7 +60,7 @@ jobs:
   #         cargo build --all --all-targets
 
   fmt:
-    name: "Check code format"
+    name: "Run cargo fmt"
     runs-on: warp-ubuntu-latest-x64-4x
     steps:
       - name: "Checkout sources"
@@ -108,7 +108,6 @@ jobs:
       - name: "Build"
         run: |
           cd bin/host
-          cargo update
           cargo +valida build
 
       - name: "Run clippy lints"
