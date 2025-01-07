@@ -59,8 +59,7 @@ checksum = "683d7910e743518b0e34f1186f92494becacb047c7b6bf616c96772180fef923"
 [[package]]
 name = "alloy-chains"
 version = "0.1.53"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da226340862e036ab26336dc99ca85311c6b662267c1440e1733890fd688802c"
+source = "git+https://github.com/lita-xyz/chains?branch=ljr-fix-hex#59e554e4711cc40cb399132823b83afd42548bea"
 dependencies = [
  "alloy-primitives",
  "alloy-rlp",
