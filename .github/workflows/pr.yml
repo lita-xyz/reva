@@ -87,7 +87,7 @@ jobs:
 
       - name:  "remove rust"
         run: |     
-          rustup self uninstall
+          rustup self uninstall -y
 
       - name: Install Rust nightly toolchain
         uses: actions-rs/toolchain@v1
