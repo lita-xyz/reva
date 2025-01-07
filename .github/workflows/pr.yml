@@ -108,6 +108,7 @@ jobs:
       - name: "Build"
         run: |
           cd bin/host
+          cargo update
           cargo +valida build
 
       - name: "Run clippy lints"
