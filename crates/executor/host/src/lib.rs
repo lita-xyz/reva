@@ -1,18 +1,18 @@
 use std::{collections::BTreeSet, marker::PhantomData};
 
-use alloy_primitives::{B256, Bloom};
+use alloy_primitives::{Bloom, B256};
 use alloy_provider::{network::AnyNetwork, Provider};
 use alloy_transport::Transport;
 use eyre::{eyre, Ok};
 use reth_execution_types::ExecutionOutcome;
 use reth_primitives::{proofs, Block, Receipts};
-use revm::db::CacheDB;
 use reva_client_executor::{
     io::ClientExecutorInput, ChainVariant, EthereumVariant, LineaVariant, OptimismVariant, Variant,
 };
 use reva_mpt::EthereumState;
 use reva_primitives::account_proof::eip1186_proof_to_account_proof;
 use reva_rpc_db::RpcDb;
+use revm::db::CacheDB;
 
 /// An executor that fetches data from a [Provider] to execute blocks in the [ClientExecutor].
 #[derive(Debug, Clone)]
@@ -175,7 +175,8 @@ impl<T: Transport + Clone, P: Provider<T, AnyNetwork> + Clone> HostExecutor<T, P
         header.parent_hash = previous_block.hash_slow();
         header.ommers_hash = proofs::calculate_ommers_root(&current_block.body.ommers);
         header.state_root = current_block.state_root;
-        header.transactions_root = proofs::calculate_transaction_root(&current_block.body.transactions);
+        header.transactions_root =
+            proofs::calculate_transaction_root(&current_block.body.transactions);
         header.receipts_root = current_block.header.receipts_root;
         header.withdrawals_root = current_block
             .body
@@ -183,8 +184,7 @@ impl<T: Transport + Clone, P: Provider<T, AnyNetwork> + Clone> HostExecutor<T, P
             .clone()
             .map(|w| proofs::calculate_withdrawals_root(w.into_inner().as_slice()));
         header.logs_bloom = logs_bloom;
-        header.requests_hash =
-            current_block.header.requests_hash;
+        header.requests_hash = current_block.header.requests_hash;
 
         // Assert the derived header is correct.
         assert_eq!(header.hash_slow(), current_block.header.hash_slow(), "header mismatch");

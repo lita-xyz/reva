@@ -160,9 +160,15 @@ impl ConfigureEvmEnv for CustomEvmConfig {
                 EthEvmConfig::new(Arc::new(self.0.spec())).fill_tx_env(tx_env, transaction, sender)
             }
             ChainVariant::Optimism => {
-                OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() })).fill_tx_env(tx_env, transaction, sender)
+                OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() })).fill_tx_env(
+                    tx_env,
+                    transaction,
+                    sender,
+                )
             }
-            ChainVariant::Linea => EthEvmConfig::new(Arc::new(self.0.spec())).fill_tx_env(tx_env, transaction, sender),
+            ChainVariant::Linea => {
+                EthEvmConfig::new(Arc::new(self.0.spec())).fill_tx_env(tx_env, transaction, sender)
+            }
         }
     }
 
@@ -173,17 +179,23 @@ impl ConfigureEvmEnv for CustomEvmConfig {
         total_difficulty: U256,
     ) {
         match self.0 {
-            ChainVariant::Ethereum => {
-                EthEvmConfig::new(Arc::new(self.0.spec())).fill_cfg_env(cfg_env, header, total_difficulty)
-            }
-            ChainVariant::Optimism => OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() })).fill_cfg_env(
+            ChainVariant::Ethereum => EthEvmConfig::new(Arc::new(self.0.spec())).fill_cfg_env(
                 cfg_env,
                 header,
                 total_difficulty,
             ),
-            ChainVariant::Linea => {
-                EthEvmConfig::new(Arc::new(self.0.spec())).fill_cfg_env(cfg_env, header, total_difficulty)
+            ChainVariant::Optimism => {
+                OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() })).fill_cfg_env(
+                    cfg_env,
+                    header,
+                    total_difficulty,
+                )
             }
+            ChainVariant::Linea => EthEvmConfig::new(Arc::new(self.0.spec())).fill_cfg_env(
+                cfg_env,
+                header,
+                total_difficulty,
+            ),
         }
     }
 
@@ -197,8 +209,10 @@ impl ConfigureEvmEnv for CustomEvmConfig {
         match self.0 {
             ChainVariant::Ethereum => EthEvmConfig::new(Arc::new(self.0.spec()))
                 .fill_tx_env_system_contract_call(env, caller, contract, data),
-            ChainVariant::Optimism => OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() }))
-                .fill_tx_env_system_contract_call(env, caller, contract, data),
+            ChainVariant::Optimism => {
+                OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() }))
+                    .fill_tx_env_system_contract_call(env, caller, contract, data)
+            }
             ChainVariant::Linea => EthEvmConfig::new(Arc::new(self.0.spec()))
                 .fill_tx_env_system_contract_call(env, caller, contract, data),
         }
@@ -211,11 +225,15 @@ impl ConfigureEvmEnv for CustomEvmConfig {
     ) -> Result<(CfgEnvWithHandlerCfg, BlockEnv), Self::Error> {
         match self.0 {
             ChainVariant::Ethereum => EthEvmConfig::new(Arc::new(self.0.spec()))
-                .next_cfg_and_block_env(parent, attributes).map_err(|_| DecodeError::InsufficientData),
-            ChainVariant::Optimism => OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() }))
-                .next_cfg_and_block_env(parent, attributes),
+                .next_cfg_and_block_env(parent, attributes)
+                .map_err(|_| DecodeError::InsufficientData),
+            ChainVariant::Optimism => {
+                OpEvmConfig::new(Arc::new(OpChainSpec { inner: self.0.spec() }))
+                    .next_cfg_and_block_env(parent, attributes)
+            }
             ChainVariant::Linea => EthEvmConfig::new(Arc::new(self.0.spec()))
-                .next_cfg_and_block_env(parent, attributes).map_err(|_| DecodeError::InsufficientData),
+                .next_cfg_and_block_env(parent, attributes)
+                .map_err(|_| DecodeError::InsufficientData),
         }
     }
 }
