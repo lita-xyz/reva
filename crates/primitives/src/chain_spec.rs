@@ -1,8 +1,8 @@
 use alloy_consensus::constants::MAINNET_GENESIS_HASH;
 use alloy_eips::eip1559::ETHEREUM_BLOCK_GAS_LIMIT;
 use reth_chainspec::{
-    BaseFeeParams, BaseFeeParamsKind, Chain, ChainHardforks, ChainSpec, DepositContract,
-    EthereumHardfork, ForkCondition, once_cell_set,
+    once_cell_set, BaseFeeParams, BaseFeeParamsKind, Chain, ChainHardforks, ChainSpec,
+    DepositContract, EthereumHardfork, ForkCondition,
 };
 use reth_optimism_forks::OptimismHardfork;
 use revm_primitives::{address, b256, U256};

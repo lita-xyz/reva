@@ -9,9 +9,7 @@ use alloy_primitives::map::{DefaultHashBuilder, HashMap};
 use alloy_provider::{network::AnyNetwork, Provider};
 use alloy_rpc_types::BlockId;
 use alloy_transport::{Transport, TransportError, TransportFut};
-use reth_primitives::{
-    revm_primitives::{AccountInfo, Address, B256, Bytecode, U256},
-};
+use reth_primitives::revm_primitives::{AccountInfo, Address, Bytecode, B256, U256};
 use reth_revm::DatabaseRef;
 use reth_storage_errors::{db::DatabaseError, provider::ProviderError};
 
@@ -46,13 +44,16 @@ pub enum RpcDbError {
 impl<T, P> RpcDb<T, P>
 where
     T: tower::Service<
-        RequestPacket,
-        Response = ResponsePacket,
-        Error = TransportError,
-        Future = TransportFut<'static>,
-    > + Send + Sync + Clone + 'static,
-    P: Provider<T, AnyNetwork> + Clone
- {
+            RequestPacket,
+            Response = ResponsePacket,
+            Error = TransportError,
+            Future = TransportFut<'static>,
+        > + Send
+        + Sync
+        + Clone
+        + 'static,
+    P: Provider<T, AnyNetwork> + Clone,
+{
     /// Create a new [`RpcDb`].
     pub fn new(provider: P, block: u64) -> Self {
         RpcDb {

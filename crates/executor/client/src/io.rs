@@ -1,13 +1,16 @@
 use std::iter::once;
 
-use alloy_primitives::{Address, B256, map::{DefaultHashBuilder, HashMap}, U256};
+use alloy_primitives::{
+    map::{DefaultHashBuilder, HashMap},
+    Address, B256, U256,
+};
 use eyre::Result;
 use itertools::Itertools;
 use reth_primitives::{revm_primitives::AccountInfo, Block, Header};
 use reth_trie::TrieAccount;
-use revm_primitives::{keccak256, Bytecode};
 use reva_mpt::EthereumState;
 use reva_witness_db::WitnessDb;
+use revm_primitives::{keccak256, Bytecode};
 use serde::{Deserialize, Serialize};
 
 /// The input for the client to execute a block and fully verify the STF (state transition
@@ -156,7 +159,8 @@ pub trait WitnessInput {
         }
 
         // Verify and build block hashes
-        let mut block_hashes: HashMap<u64, B256> = HashMap::with_hasher(DefaultHashBuilder::default());
+        let mut block_hashes: HashMap<u64, B256> =
+            HashMap::with_hasher(DefaultHashBuilder::default());
         for (child_header, parent_header) in self.headers().tuple_windows() {
             if parent_header.number != child_header.number - 1 {
                 eyre::bail!("non-consecutive blocks");
