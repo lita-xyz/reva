@@ -20,8 +20,10 @@
 #![allow(dead_code)]
 
 use alloc::boxed::Box;
-use alloy_primitives::{Address, b256, B256,
-    map::{DefaultHashBuilder, HashMap}
+use alloy_primitives::{
+    b256,
+    map::{DefaultHashBuilder, HashMap},
+    Address, B256,
 };
 use alloy_rlp::Encodable;
 use core::{
@@ -973,7 +975,8 @@ pub fn proofs_to_tries(
         });
     }
 
-    let mut storage: HashMap<B256, MptNode> = HashMap::with_capacity_and_hasher(proofs.len(), DefaultHashBuilder::default());
+    let mut storage: HashMap<B256, MptNode> =
+        HashMap::with_capacity_and_hasher(proofs.len(), DefaultHashBuilder::default());
 
     let mut state_nodes = HashMap::with_hasher(DefaultHashBuilder::default());
     let mut state_root_node = MptNode::default();
@@ -1039,7 +1042,8 @@ pub fn transition_proofs_to_tries(
         });
     }
 
-    let mut storage: HashMap<B256, MptNode> = HashMap::with_capacity_and_hasher(parent_proofs.len(), DefaultHashBuilder::default());
+    let mut storage: HashMap<B256, MptNode> =
+        HashMap::with_capacity_and_hasher(parent_proofs.len(), DefaultHashBuilder::default());
 
     let mut state_nodes = HashMap::with_hasher(DefaultHashBuilder::default());
     let mut state_root_node = MptNode::default();

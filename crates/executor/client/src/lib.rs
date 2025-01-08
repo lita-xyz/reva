@@ -15,12 +15,14 @@ use io::ClientExecutorInput;
 use reth_chainspec::ChainSpec;
 use reth_errors::ProviderError;
 use reth_ethereum_consensus::validate_block_post_execution as validate_block_post_execution_ethereum;
-use reth_evm::execute::{BlockExecutionStrategyFactory, BlockExecutionOutput, BasicBlockExecutor, Executor};
+use reth_evm::execute::{
+    BasicBlockExecutor, BlockExecutionOutput, BlockExecutionStrategyFactory, Executor,
+};
 use reth_evm_ethereum::execute::EthExecutionStrategyFactory;
-use reth_optimism_chainspec::OpChainSpec;
-use reth_optimism_evm::OpExecutionStrategyFactory;
 use reth_execution_types::ExecutionOutcome;
+use reth_optimism_chainspec::OpChainSpec;
 use reth_optimism_consensus::validate_block_post_execution as validate_block_post_execution_optimism;
+use reth_optimism_evm::OpExecutionStrategyFactory;
 use reth_primitives::{proofs, Block, BlockWithSenders, Header, Receipt, Receipts};
 use revm::{db::CacheDB, Database};
 use revm_primitives::{address, U256};
@@ -172,7 +174,8 @@ impl ClientExecutor {
         header.parent_hash = input.parent_header().hash_slow();
         header.ommers_hash = proofs::calculate_ommers_root(&input.current_block.body.ommers);
         header.state_root = input.current_block.state_root;
-        header.transactions_root = proofs::calculate_transaction_root(&input.current_block.body.transactions);
+        header.transactions_root =
+            proofs::calculate_transaction_root(&input.current_block.body.transactions);
         header.receipts_root = input.current_block.header.receipts_root;
         header.withdrawals_root = input
             .current_block
@@ -181,8 +184,7 @@ impl ClientExecutor {
             .clone()
             .map(|w| proofs::calculate_withdrawals_root(w.into_inner().as_slice()));
         header.logs_bloom = logs_bloom;
-        header.requests_hash =
-            input.current_block.header.requests_hash;
+        header.requests_hash = input.current_block.header.requests_hash;
 
         Ok(header)
     }
@@ -206,7 +208,7 @@ impl Variant for EthereumVariant {
                 Self::spec().into(),
                 CustomEvmConfig::from_variant(ChainVariant::Ethereum),
             )
-            .create_strategy(cache_db)
+            .create_strategy(cache_db),
         )
         .execute((executor_block_input, executor_difficulty).into())?)
     }
@@ -239,7 +241,7 @@ impl Variant for OptimismVariant {
                 OpChainSpec { inner: Self::spec() }.into(),
                 CustomEvmConfig::from_variant(ChainVariant::Optimism),
             )
-            .create_strategy(cache_db)
+            .create_strategy(cache_db),
         )
         .execute((executor_block_input, executor_difficulty).into())?)
     }
@@ -272,7 +274,7 @@ impl Variant for LineaVariant {
                 Self::spec().into(),
                 CustomEvmConfig::from_variant(ChainVariant::Linea),
             )
-            .create_strategy(cache_db)
+            .create_strategy(cache_db),
         )
         .execute((executor_block_input, executor_difficulty).into())?)
     }
