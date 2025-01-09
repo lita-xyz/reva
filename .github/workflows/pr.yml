@@ -78,7 +78,7 @@ jobs:
         run: |
           cargo fmt --all -- --check
 
-  clippy:
+  Build:
     name: "Build Reva"
     runs-on: warp-custom-big-disk
     steps:
@@ -99,7 +99,7 @@ jobs:
       - name: "Read Valida version"
         id: valida-version
         run: |
-          VALIDA_VERSION=$(cat valida-version-pin.txt
+          VALIDA_VERSION=$(cat valida-version-pin.txt)
           echo "version=$VALIDA_VERSION" >> $GITHUB_OUTPUT
 
       - name: "Download Valida binary release"
