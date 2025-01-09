@@ -96,14 +96,20 @@ jobs:
           toolchain: nightly
           components: clippy
 
+      - name: "Read Valida version"
+        id: valida-version
+        run: |
+          VALIDA_VERSION=$(cat valida-version-pin.txt
+          echo "version=$VALIDA_VERSION" >> $GITHUB_OUTPUT
+
       - name: "Download Valida binary release"
         run: |
-          wget -nv https://github.com/lita-xyz/valida-releases/releases/latest/download/llvm-valida-v0.7.0-alpha-linux-x86_64.tar.xz
+          wget -nv https://github.com/lita-xyz/valida-releases/releases/latest/download/llvm-valida-${{ steps.valida-version.outputs.version }}-linux-x86_64.tar.xz
 
       - name: "Install Valida"
         run: |
           mkdir -p /home/runner/.local/bin
-          tar -xf llvm-valida-v0.7.0-alpha-linux-x86_64.tar.xz
+          tar -xf llvm-valida-${{ steps.valida-version.outputs.version }}-linux-x86_64.tar.xz
           cd ./valida-toolchain
           sudo ./install.sh
           rustup toolchain link valida /valida-toolchain
