@@ -28,3 +28,4 @@ zstd-sys = { git = "https://github.com/lita-xyz/zstd-rs.git", branch = "zstd-sys
 proptest = { git = "https://github.com/lita-xyz/proptest", branch = "1.5.0-valida" }
 pprof = { git = "https://github.com/lita-xyz/pprof-rs", branch = "0.13.0-valida" }
 alloy-primitives = { git = "https://github.com/lewis1revill/core", branch = "0.8.15-valida" }
+alloy-chains = { git = "https://github.com/lita-xyz/chains", branch = "ljr-fix-hex" }
