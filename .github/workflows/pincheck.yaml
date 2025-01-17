@@ -56,7 +56,7 @@ jobs:
         if: steps.version-check.outputs.versions_match == 'false'
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.CONTAINER_REGISTRY }} -u ${{ github.actor }} --password-stdin
-          docker pull ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE }}:${{ steps.get-latest-version.outputs.latest_version }}
+          docker pull ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE }}:v0.7.0-alpha
 
       - name: Run build in container
         if: steps.version-check.outputs.versions_match == 'false'
@@ -67,7 +67,7 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
             -w /workspace \
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE }}:${{ steps.get-latest-version.outputs.latest_version }} \
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE }}:v0.7.0-alpha \
             cargo +valida build --release
 
       - name: Update version pin on success
