@@ -120,7 +120,7 @@ jobs:
 
       - name: "Build eth-client"
         run: |
-          cd bin/eth-client
+          cd bin/client-eth
           cargo +valida build --release
 
       # - name: "Run clippy lints"
