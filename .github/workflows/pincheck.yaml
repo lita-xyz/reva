@@ -17,7 +17,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          repository: https://github.com/lita-xyz/valida-toolchain.git
+          repository: lita-xyz/valida-toolchain
           ssh-key: ${{ secrets.ACCESS_VALIDA_TOOLCHAIN }}
 
       - name: Install dependencies
@@ -100,4 +100,12 @@ jobs:
           key: valida-latest
           path: /valida-toolchain/
 
-
+      - name: Save Valida commit hash on success
+        if: steps.reva.outcome=='success' && steps.eth.outcome=='success'
+        run: |
+          git rev-parse HEAD > .valida-pin
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add .valida-pin
+          git commit -m "Update Valida pin"
+          git push
