@@ -5,11 +5,6 @@ on:
     - cron: '0 0 * * *'  # Run at midnight UTC daily
   workflow_dispatch:
 
-
-env:
-  CONTAINER_REGISTRY: ghcr.io
-  CONTAINER_IMAGE: lita-xyz/llvm-valida-releases/valida-build-container
-
 jobs:
   check-and-build-main:
     runs-on: warp-custom-big-disk
@@ -18,155 +13,91 @@ jobs:
       packages: read
 
     steps:
-      - name: Checkout repository
+    # Build latest Valida
+      - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          repository: https://github.com/lita-xyz/valida-toolchain.git
+          ssh-key: ${{ secrets.ACCESS_VALIDA_TOOLCHAIN }}
 
-      - name: Get pinned version
-        id: get-pinned-version
+      - name: Install dependencies
         run: |
-          PINNED_VERSION=$(cat ./valida-version-pin.txt)
-          echo "pinned_version=${PINNED_VERSION}" >> $GITHUB_OUTPUT
-
-      - name: Get latest container version
-        id: get-latest-version
-        run: |
-          LATEST_VERSION=$(curl -s -L -H "Accept: application/vnd.github+json" -H \
-          "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H \
-          "X-GitHub-Api-Version: 2022-11-28" \
-          "https://api.github.com/orgs/lita-xyz/packages/container/llvm-valida-releases%2Fvalida-build-container/versions" \
-          | jq -r '.[0].metadata.container.tags[0]')
-          echo "latest_version=${LATEST_VERSION}" >> $GITHUB_OUTPUT
-
-      - name: Compare versions
-        id: version-check
-        run: |
-          if [ "${{ steps.get-pinned-version.outputs.pinned_version }}" = "${{ steps.get-latest-version.outputs.latest_version }}" ]; then
-            echo "versions_match=true" >> $GITHUB_OUTPUT
-          else
-            echo "versions_match=false" >> $GITHUB_OUTPUT
+          sudo apt update
+          sudo apt install -y cmake ninja-build clang lld libstdc++-12-dev
+          if [ "$(uname -m)" = "x86_64" ]; then
+            sudo apt install -y gcc-multilib
           fi
 
-      - name: Exit if versions match
-        if: steps.version-check.outputs.versions_match == 'true'
-        run: |
-          echo "Pinned version matches latest container version. No build needed."
-          exit 0
+          git clone https://github.com/lita-xyz/cargo-multiarch.git
+          cd cargo-multiarch
+          cargo install --locked --path .
+          cd ..
 
-      - name: Pull latest container
-        if: steps.version-check.outputs.versions_match == 'false'
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.CONTAINER_REGISTRY }} -u ${{ github.actor }} --password-stdin
-          docker pull ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE }}:${{ steps.get-latest-version.outputs.latest_version }}
+      - name: Install Rust nightly toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          components: rustfmt, clippy
 
-      - name: Run build in container
-        if: steps.version-check.outputs.versions_match == 'false'
-        id: build
+      - name: Build all projects
+        run: |
+          sudo mkdir -p /valida-toolchain
+          sudo mkdir -p /home/runner/.local/bin
+          sudo chown $(whoami):users /home/runner/.local/bin
+          sudo chown $(whoami):users /valida-toolchain
+          ./configure-build-install.sh
+          rustup toolchain link valida /valida-toolchain
+
+      - name: Checkout Reva repository
+        uses: actions/checkout@v4
+
+      # Test reva against local valida
+
+      # If it fails, refresh the existing cache
+      # If it succeeds, replace the existing cache and update the pinned commit hash
+
+      - name: Build Reva
+        id: reva
         continue-on-error: true
         run: |
           cd bin/host
-          docker run --rm \
-            -v ${{ github.workspace }}:/workspace \
-            -w /workspace \
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE }}:${{ steps.get-latest-version.outputs.latest_version }} \
-            cargo +valida build --release
+          cargo +valida build --target=x86_64-unknown-linux-gnu --release
 
-      - name: Update version pin on success
-        if: steps.version-check.outputs.versions_match == 'false' && steps.build.outcome == 'success'
+      - name: Build Eth-client
+        id: eth
+        continue-on-error: true
         run: |
-          echo "${{ steps.get-latest-version.outputs.latest_version }}" > ./valida-version-pin.txt
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -am "Update valida version pin to ${{ steps.get-latest-version.outputs.latest_version }}"
-          git push
+          cd bin/client-eth
+          cargo +valida build --release
 
-      # - name: Send failure notification
-      #   if: steps.version-check.outputs.versions_match == 'false' && steps.build.outcome == 'failure'
-      #   uses: dawidd6/action-send-mail@v3
-      #   with:
-      #     server_address: ${{ secrets.SMTP_SERVER }}
-      #     server_port: ${{ secrets.SMTP_PORT }}
-      #     username: ${{ secrets.SMTP_USERNAME }}
-      #     password: ${{ secrets.SMTP_PASSWORD }}
-      #     subject: "⚠️ Valida Build Failed for Reva"
-      #     body: |
-      #       The nightly Valida build check has failed.
-            
-      #       Container version: ${{ steps.get-latest-version.outputs.latest_version }}
-      #       Repository: ${{ github.repository }}
-      #       Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            
-      #       Please check the workflow logs for more details.
-      #     to: ${{ secrets.NOTIFICATION_EMAIL }}
-      #     from: GitHub Actions <${{ secrets.SMTP_USERNAME }}>
-  
-  # check-and-build-develop:
-  #   runs-on: warp-custom-big-disk
-  #   permissions:
-  #     contents: write
-  #     packages: read
+      - name: Clear failing build
+        if: steps.reva.outcome=='failure' || steps.eth.outcome=='failure'
+        run: |
+          sudo rm -rf /valida-toolchain/*
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4 
-  #       with:
-  #        ref: 'develop'
+      - name: Refresh current pin on failure
+        if: steps.reva.outcome=='failure' || steps.eth.outcome=='failure'
+        uses: WarpBuilds/cache@v1.4.1
+        with:
+          enableCrossArchArchive: true
+          path: /valida-toolchain/
+          key: valida-latest
 
-  #     - name: Get pinned version
-  #       id: get-pinned-version
-  #       run: |
-  #         PINNED_VERSION=$(cat ./develop-pin.txt)
-  #         echo "pinned_version=${PINNED_VERSION}" >> $GITHUB_OUTPUT
+      - name: Delete existing cache on build success
+        if: steps.reva.outcome=='success' || steps.eth.outcome=='success'
+        uses: WarpBuilds/cache@v1
+        with:
+          path: /valida-toolchain/
+          key: valida-latest
+          delete-cache: true
 
-  #     - name: Get latest Valida commit
-  #       id: get-latest-version
-  #       run: |
-  #         LATEST_VERSION=$(curl -s -L -H "Accept: application/vnd.github+json" -H \
-  #         "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H \
-  #         "X-GitHub-Api-Version: 2022-11-28" \
-  #         "https://api.github.com/repos/lita-xyz/valida-toolchain/commits/main" \
-  #         | jq -r '.sha')
-  #         echo "latest_version=${LATEST_VERSION}" >> $GITHUB_OUTPUT
-
-  #     - name: Compare versions
-  #       id: version-check
-  #       run: |
-  #         if [ "${{ steps.get-pinned-version.outputs.pinned_version }}" = "${{ steps.get-latest-version.outputs.latest_version }}" ]; then
-  #           echo "versions_match=true" >> $GITHUB_OUTPUT
-  #         else
-  #           echo "versions_match=false" >> $GITHUB_OUTPUT
-  #         fi
-
-  #     - name: Exit if versions match
-  #       if: steps.version-check.outputs.versions_match == 'true'
-  #       run: |
-  #         echo "Pinned commit matches latest valida commit. No build needed."
-  #         exit 0
-
-  #     - name: Clone Valida
-  #       if: steps.version-check.outputs.versions_match == 'false'
-  #       uses: actions/checkout@v4
-  #       with:
-  #        repository: ''
-  #        ref: 'develop'
+      - name: Update cache on success
+        if: steps.reva.outcome=='success' || steps.eth.outcome=='success'
+        uses: WarpBuilds/cache@v1.4.1
+        with:
+          enableCrossArchArchive: true
+          key: valida-latest
+          path: /valida-toolchain/
 
 
-  #     - name: Run build in container
-  #       if: steps.version-check.outputs.versions_match == 'false'
-  #       id: build
-  #       continue-on-error: true
-  #       run: |
-  #         cd bin/host
-  #         docker run --rm \
-  #           -v ${{ github.workspace }}:/workspace \
-  #           -w /workspace \
-  #           ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE }}:${{ steps.get-latest-version.outputs.latest_version }} \
-  #           cargo +valida build --release
-
-  #     - name: Update version pin on success
-  #       if: steps.version-check.outputs.versions_match == 'false' && steps.build.outcome == 'success'
-  #       run: |
-  #         echo "${{ steps.get-latest-version.outputs.latest_version }}" > ./valida-version-pin.txt
-  #         git config --local user.email "github-actions[bot]@users.noreply.github.com"
-  #         git config --local user.name "github-actions[bot]"
-  #         git commit -am "Update valida version pin to ${{ steps.get-latest-version.outputs.latest_version }}"
-  #         git push

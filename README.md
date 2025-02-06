@@ -19,7 +19,7 @@ To use ReVa, you must first have [the Valida tools](https://github.com/lita-xyz/
 In the directory bin/host, run:
 
 ```console
-cargo +valida build --release
+cargo +valida build --target=x86_64-unknown-linux-gnu
 ```
 
 this will build the binary `bin/host/target/release/reva` for your host architecture.
