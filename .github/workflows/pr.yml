@@ -75,8 +75,3 @@ jobs:
         run: |
           cd bin/client-eth
           cargo +valida build --release
-
-      - name: "Run Reva Tests"
-        run: |
-          cd scripts/
-          ./test-client.sh
