@@ -52,11 +52,6 @@ jobs:
       - name: Checkout Reva repository
         uses: actions/checkout@v4
 
-      # Test reva against local valida
-
-      # If it fails, refresh the existing cache
-      # If it succeeds, replace the existing cache and update the pinned commit hash
-
       - name: Build Reva
         id: reva
         continue-on-error: true
