@@ -78,4 +78,5 @@ jobs:
 
       - name: "Run Reva Tests"
         run: |
-          ./scripts/test-client.sh
+          cd scripts/
+          ./test-client.sh
