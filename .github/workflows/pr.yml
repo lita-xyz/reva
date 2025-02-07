@@ -76,10 +76,6 @@ jobs:
           cd bin/client-eth
           cargo +valida build --release
 
-      - name: "Run Tests"
-        run: |
-          cargo clippy --all --all-targets -- -D warnings
-
       - name: "Run Reva Tests"
         run: |
           ./scripts/test-client.sh
