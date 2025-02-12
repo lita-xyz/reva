@@ -1,0 +1,106 @@
+name: Nightly Valida Pin Update
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run at midnight UTC daily
+  workflow_dispatch:
+
+jobs:
+  check-and-build-main:
+    runs-on: warp-custom-big-disk
+    permissions:
+      contents: write
+      packages: read
+
+    steps:
+    # Build latest Valida
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          repository: lita-xyz/valida-toolchain
+          ssh-key: ${{ secrets.ACCESS_VALIDA_TOOLCHAIN }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y cmake ninja-build clang lld libstdc++-12-dev
+          if [ "$(uname -m)" = "x86_64" ]; then
+            sudo apt install -y gcc-multilib
+          fi
+
+          git clone https://github.com/lita-xyz/cargo-multiarch.git
+          cd cargo-multiarch
+          cargo install --locked --path .
+          cd ..
+
+      - name: Install Rust nightly toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          components: rustfmt, clippy
+
+      - name: Build all projects
+        run: |
+          sudo mkdir -p /valida-toolchain
+          sudo mkdir -p /home/runner/.local/bin
+          sudo chown $(whoami):users /home/runner/.local/bin
+          sudo chown $(whoami):users /valida-toolchain
+          ./configure-build-install.sh
+          rustup toolchain link valida /valida-toolchain
+
+      - name: Checkout Reva repository
+        uses: actions/checkout@v4
+
+      - name: Build Reva
+        id: reva
+        continue-on-error: true
+        run: |
+          cd bin/host
+          cargo +valida build --target=x86_64-unknown-linux-gnu --release
+
+      - name: Build Eth-client
+        id: eth
+        continue-on-error: true
+        run: |
+          cd bin/client-eth
+          cargo +valida build --release
+
+      - name: Clear failing build
+        if: steps.reva.outcome=='failure' || steps.eth.outcome=='failure'
+        run: |
+          sudo rm -rf /valida-toolchain/*
+
+      - name: Refresh current pin on failure
+        if: steps.reva.outcome=='failure' || steps.eth.outcome=='failure'
+        uses: WarpBuilds/cache@v1.4.1
+        with:
+          enableCrossArchArchive: true
+          path: /valida-toolchain/
+          key: valida-latest
+
+      - name: Delete existing cache on build success
+        if: steps.reva.outcome=='success' || steps.eth.outcome=='success'
+        uses: WarpBuilds/cache@v1
+        with:
+          path: /valida-toolchain/
+          key: valida-latest
+          delete-cache: true
+
+      - name: Update cache on success
+        if: steps.reva.outcome=='success' || steps.eth.outcome=='success'
+        uses: WarpBuilds/cache@v1.4.1
+        with:
+          enableCrossArchArchive: true
+          key: valida-latest
+          path: /valida-toolchain/
+
+      - name: Save Valida commit hash on success
+        if: steps.reva.outcome=='success' && steps.eth.outcome=='success'
+        run: |
+          git rev-parse HEAD > .valida-pin
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add .valida-pin
+          git commit -m "Update Valida pin"
+          git push

@@ -12,7 +12,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
   fmt:
     name: "Run cargo fmt"
     runs-on: warp-ubuntu-latest-x64-4x
@@ -50,22 +53,21 @@ jobs:
           toolchain: nightly
           components: clippy
 
-      - name: "Read Valida version"
-        id: valida-version
+      - name: "Make Dirs"
         run: |
-          VALIDA_VERSION=$(cat valida-version-pin.txt)
-          echo "version=$VALIDA_VERSION" >> $GITHUB_OUTPUT
+          mkdir -p /home/runner/.local/bin
+          sudo mkdir -p /valida-toolchain/
+          sudo chown $(whoami):users /valida-toolchain 
 
-      - name: "Download Valida binary release"
-        run: |
-          wget -nv https://github.com/lita-xyz/valida-releases/releases/latest/download/llvm-valida-${{ steps.valida-version.outputs.version }}-linux-x86_64.tar.xz
+      - name: Get cached Valida
+        uses: WarpBuilds/cache@v1.4.1
+        with:
+          enableCrossArchArchive: true
+          key: valida-latest
+          path: /valida-toolchain/
 
       - name: "Install Valida"
         run: |
-          mkdir -p /home/runner/.local/bin
-          tar -xf llvm-valida-${{ steps.valida-version.outputs.version }}-linux-x86_64.tar.xz
-          cd ./valida-toolchain
-          sudo ./install.sh
           rustup toolchain link valida /valida-toolchain
 
       - name: "Build Reva"
