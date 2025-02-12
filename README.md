@@ -71,3 +71,7 @@ To prove, use:
 ```bash
 valida prove target/valida-unknown-baremetal-gnu/release/reva-client-{op,eth} log < bin/host/input/<chain_id>/<block_no>.bin
 ```
+
+## Issue reporting
+
+Any issues report at https://github.com/lita-xyz/valida-releases/issues
