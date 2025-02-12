@@ -53,7 +53,7 @@ jobs:
         run: |
           mkdir -p /home/runner/.local/bin
           sudo mkdir -p /valida-toolchain/
-          sudo chown $(whoami):users /valida-toolchain 
+          sudo chown $(whoami):users /valida-toolchain
 
       - name: Get cached Valida
         uses: WarpBuilds/cache@v1.4.1
@@ -64,6 +64,7 @@ jobs:
 
       - name: "Install Valida"
         run: |
+          echo "Restored Valida toolchain from cache with commit hash: "`cat .valida-pin`
           rustup toolchain link valida /valida-toolchain
 
       - name: "Build Reva"

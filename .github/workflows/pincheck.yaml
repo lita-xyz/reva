@@ -47,7 +47,10 @@ jobs:
           sudo chown $(whoami):users /home/runner/.local/bin
           sudo chown $(whoami):users /valida-toolchain
           ./configure-build-install.sh
-          rustup toolchain link valida /valida-toolchain
+          rustup toolchain link valida /valida-toolchain  
+          # store built Valida commit hash for future reference
+          echo `git rev-parse HEAD` > .valida-pin
+          echo "Built Valida toolchain to be cached: "`cat .valida-pin`
 
       - name: Checkout Reva repository
         uses: actions/checkout@v4
@@ -94,13 +97,3 @@ jobs:
           enableCrossArchArchive: true
           key: valida-latest
           path: /valida-toolchain/
-
-      - name: Save Valida commit hash on success
-        if: steps.reva.outcome=='success' && steps.eth.outcome=='success'
-        run: |
-          git rev-parse HEAD > .valida-pin
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git add .valida-pin
-          git commit -m "Update Valida pin"
-          git push
