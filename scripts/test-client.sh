@@ -1,8 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 scriptsdir=$(dirname "$0")
 topdir=$(dirname "$scriptsdir")
-
+echo
 source "$scriptsdir/BLOCKS.sh"
 
 cd $topdir/bin/client-eth
