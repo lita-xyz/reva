@@ -70,7 +70,7 @@ jobs:
       - name: "Build Reva"
         run: |
           cd bin/host
-          cargo +valida build --target=x86_64-unknown-linux-gnu
+          cargo +valida build --target=x86_64-unknown-linux-gnu --release
 
       - name: "Build eth-client"
         run: |
