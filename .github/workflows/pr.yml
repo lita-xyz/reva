@@ -75,7 +75,7 @@ jobs:
       - name: "Build eth-client"
         run: |
           cd bin/client-eth
-          cargo +valida build --relase
+          cargo +valida build --release
 
       - name: "Run Reva Tests"
         run: |
