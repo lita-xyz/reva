@@ -26,7 +26,7 @@ this will build the binary `bin/host/target/release/reva` for your host architec
 
 ### Running the Host application
 
-Running the host application will generate an input file to be used by the target/client application. Simply suppply a block number, a chain ID (1 for ethereum, 10 for OP), and an RPC URL:
+Running the host application will generate an input file to be used by the target/client application. Simply supply a block number, a chain ID (1 for ethereum, 10 for OP), and an RPC URL:
 
 ```console
 ./bin/host/target/release/reva --block-number 20000005 --chain-id 1 --rpc-url <RPC>
