@@ -65,7 +65,12 @@ jobs:
       - name: "Install Valida"
         run: |
           echo "Restored Valida toolchain from cache with commit hash: "`cat .valida-pin`
-          rustup toolchain link valida /valida-toolchain
+          HOST_TRIPLE=x86_64-unknown-linux-gnu
+          SYSROOT=/valida-toolchain
+          rustup toolchain link valida $SYSROOT/
+
+rustup toolchain link valida $SYSROOT/
+
 
       - name: "Build Reva"
         run: |
