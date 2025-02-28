@@ -47,7 +47,7 @@ jobs:
           sudo chown $(whoami):users /home/runner/.local/bin
           sudo chown $(whoami):users /valida-toolchain
           ./configure-build-install.sh
-          rustup toolchain link valida /valida-toolchain  
+          ./install-rust.sh  
           # store built Valida commit hash for future reference
           echo `git rev-parse HEAD` > .valida-pin
           echo "Built Valida toolchain to be cached: "`cat .valida-pin`
