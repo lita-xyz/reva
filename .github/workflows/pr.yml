@@ -67,9 +67,10 @@ jobs:
         with:
           limit-access-to-actor: false
 
-      - name: "Confirm restore"
+      - name: "Link toolchain"
         run: |
           echo "Restored Valida toolchain from cache with commit hash: "`cat .valida-pin`
+          rustup toolchain link valida /valida-toolchain/rust-toolchain
 
       - name: "Build Reva"
         run: |
