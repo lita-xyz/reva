@@ -67,12 +67,9 @@ jobs:
         with:
           limit-access-to-actor: false
 
-      - name: "Install Valida"
+      - name: "Confirm restore"
         run: |
           echo "Restored Valida toolchain from cache with commit hash: "`cat .valida-pin`
-          HOST_TRIPLE=x86_64-unknown-linux-gnu
-          SYSROOT=/valida-toolchain
-          rustup toolchain link valida $SYSROOT/
 
       - name: "Build Reva"
         run: |
