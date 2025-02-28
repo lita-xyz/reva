@@ -69,9 +69,6 @@ jobs:
           SYSROOT=/valida-toolchain
           rustup toolchain link valida $SYSROOT/
 
-rustup toolchain link valida $SYSROOT/
-
-
       - name: "Build Reva"
         run: |
           cd bin/host
