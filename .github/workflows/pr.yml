@@ -61,6 +61,11 @@ jobs:
           enableCrossArchArchive: true
           key: valida-latest
           path: /valida-toolchain/
+      
+      - name: Setup interactive ssh session
+        uses: Warpbuilds/action-debugger@v1.3
+        with:
+          limit-access-to-actor: false
 
       - name: "Install Valida"
         run: |
