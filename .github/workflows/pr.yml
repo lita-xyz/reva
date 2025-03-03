@@ -22,7 +22,7 @@ jobs:
       - name: "Setup nightly toolchain"
         uses: "actions-rs/toolchain@v1"
         with:
-          toolchain: "nightly"
+          toolchain: nightly-2024-10-04
           profile: "minimal"
           components: "rustfmt"
           override: true
@@ -53,7 +53,7 @@ jobs:
         run: |
           mkdir -p /home/runner/.local/bin
           sudo mkdir -p /valida-toolchain/
-          sudo chown $(whoami):users /valida-toolchain 
+          sudo chown $(whoami):users /valida-toolchain
 
       - name: Get cached Valida
         uses: WarpBuilds/cache@v1.4.1
@@ -62,9 +62,10 @@ jobs:
           key: valida-latest
           path: /valida-toolchain/
 
-      - name: "Install Valida"
+      - name: "Link toolchain"
         run: |
-          rustup toolchain link valida /valida-toolchain
+          echo "Restored Valida toolchain from cache with commit hash: "`cat .valida-pin`
+          rustup toolchain link valida /valida-toolchain/rust-toolchain
 
       - name: "Build Reva"
         run: |
@@ -75,3 +76,7 @@ jobs:
         run: |
           cd bin/client-eth
           cargo +valida build --release
+
+      - name: "Run Reva Tests"
+        run: |
+          ./scripts/test-client.sh
