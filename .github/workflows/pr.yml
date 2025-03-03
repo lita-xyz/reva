@@ -22,7 +22,7 @@ jobs:
       - name: "Setup nightly toolchain"
         uses: "actions-rs/toolchain@v1"
         with:
-          toolchain: "nightly"
+          toolchain: nightly-2024-10-04
           profile: "minimal"
           components: "rustfmt"
           override: true
