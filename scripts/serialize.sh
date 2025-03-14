@@ -4,7 +4,7 @@ HOSTTRIPLE=x86_64-unknown-linux-gnu
 
 rpcurl=$1
 
-scriptsdir=$(dirname "$0")
+scriptsdir=$(dirname $(realpath "$0"))
 topdir=$(dirname "$scriptsdir")
 
 source "$scriptsdir/BLOCKS.sh"
