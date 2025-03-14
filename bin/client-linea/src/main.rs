@@ -2,10 +2,12 @@
 valida_rs::entrypoint!(main);
 
 use reva_client_executor::{io::ClientExecutorInput, ClientExecutor, LineaVariant};
+use std::io::{self, Read};
 
 pub fn main() {
     // Read the input.
-    let input = valida_rs::io::read().unwrap();
+    let mut input = Vec::new();
+    io::stdin().read_to_end(&mut input).unwrap();
     let input = serde_json::de::from_slice::<ClientExecutorInput>(&input.as_slice()).unwrap();
 
     // Execute the block.
