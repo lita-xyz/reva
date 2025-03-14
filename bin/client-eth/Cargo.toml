@@ -30,5 +30,3 @@ pprof = { git = "https://github.com/lita-xyz/pprof-rs", branch = "0.13.0-valida"
 alloy-primitives = { git = "https://github.com/lita-xyz/core" }
 alloy-chains = { git = "https://github.com/lita-xyz/chains", branch = "ljr-fix-hex" }
 
-[profile.release]
-lto = false
