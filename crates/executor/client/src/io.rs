@@ -90,7 +90,7 @@ pub trait WitnessInput {
     /// Gets an iterator over account bytecodes.
     fn bytecodes(&self) -> impl Iterator<Item = &Bytecode>;
 
-    /// Gets an iterator over references to a consecutive, reverse-chronological block headers
+    /// Gets an iterator over references to consecutive, reverse-chronological block headers
     /// starting from the current block header.
     fn headers(&self) -> impl Iterator<Item = &Header>;
 
