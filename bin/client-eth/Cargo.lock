@@ -3244,18 +3244,17 @@ dependencies = [
 [[package]]
 name = "secp256k1"
 version = "0.29.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9465315bc9d4566e1724f0fffcbcc446268cb522e60f9a27bcded6b19c108113"
+source = "git+https://github.com/lita-xyz/rust-secp256k1.git?branch=secp256k1-0.29.1-valida#95dd32048207a6883ea485ea1527e4fda6442bce"
 dependencies = [
  "rand",
  "secp256k1-sys",
+ "valida-secp256k1",
 ]
 
 [[package]]
 name = "secp256k1-sys"
-version = "0.10.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d4387882333d3aa8cb20530a17c69a3752e97837832f34f6dccc760e715001d9"
+version = "0.10.0"
+source = "git+https://github.com/lita-xyz/rust-secp256k1.git?branch=secp256k1-0.29.1-valida#95dd32048207a6883ea485ea1527e4fda6442bce"
 dependencies = [
  "cc",
 ]
@@ -3851,6 +3850,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6c140620e7ffbb22c2dee59cafe6084a59b5ffc27a8859a5f0d494b5d52b6be"
 
 [[package]]
+name = "valida-intrinsics"
+version = "0.1.0"
+source = "git+https://github.com/lita-xyz/valida-intrinsics.git?rev=9a954d056eedec7d4506729cca84dbcc226c47c7#9a954d056eedec7d4506729cca84dbcc226c47c7"
+
+[[package]]
 name = "valida-rs"
 version = "0.1.0"
 source = "git+https://github.com/lita-xyz/valida-rs?branch=main#5b2288a5fa50bb2063dc181220476b4b0768d8d2"
@@ -3858,6 +3862,19 @@ dependencies = [
  "getrandom",
  "once_cell",
  "rand",
+]
+
+[[package]]
+name = "valida-secp256k1"
+version = "0.1.0"
+source = "git+https://github.com/lita-xyz/valida-secp256k1.git?rev=697e799623fd011daa56887b7826e8022bd1c520#697e799623fd011daa56887b7826e8022bd1c520"
+dependencies = [
+ "const-hex",
+ "hex",
+ "lazy_static",
+ "num-bigint 0.4.6",
+ "num-traits",
+ "valida-intrinsics",
 ]
 
 [[package]]
