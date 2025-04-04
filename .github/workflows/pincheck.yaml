@@ -76,7 +76,7 @@ jobs:
 
       - name: Refresh current pin on failure
         if: steps.reva.outcome=='failure' || steps.eth.outcome=='failure'
-        uses: WarpBuilds/cache@v1.4.1
+        uses: WarpBuilds/cache@v1.4.5
         with:
           enableCrossArchArchive: true
           path: /valida-toolchain/
@@ -84,7 +84,7 @@ jobs:
 
       - name: Delete existing cache on build success
         if: steps.reva.outcome=='success' || steps.eth.outcome=='success'
-        uses: WarpBuilds/cache@v1
+        uses: WarpBuilds/cache@v1.4.5
         with:
           path: /valida-toolchain/
           key: valida-latest
@@ -92,7 +92,7 @@ jobs:
 
       - name: Update cache on success
         if: steps.reva.outcome=='success' || steps.eth.outcome=='success'
-        uses: WarpBuilds/cache@v1.4.1
+        uses: WarpBuilds/cache@v1.4.5
         with:
           enableCrossArchArchive: true
           key: valida-latest
