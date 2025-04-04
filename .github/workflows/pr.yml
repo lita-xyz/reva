@@ -56,7 +56,7 @@ jobs:
           sudo chown $(whoami):users /valida-toolchain
 
       - name: Get cached Valida
-        uses: WarpBuilds/cache@v1.4.1
+        uses: WarpBuilds/cache@v1.4.5
         with:
           enableCrossArchArchive: true
           key: valida-latest
