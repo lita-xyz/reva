@@ -131,7 +131,7 @@ impl ClientExecutor {
             V::execute(&executor_block_input, executor_difficulty, cache_db)
         })?;
 
-        // Validate the block post execution.
+        // Validate the block post-execution.
         profile!("validate block post-execution", {
             V::validate_block_post_execution(
                 &executor_block_input,
