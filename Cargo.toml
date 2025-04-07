@@ -53,6 +53,7 @@ reth-primitives = { git = "https://github.com/lita-xyz/reth", branch = "1.1.1-de
     "alloy-compat",
     "optimism",
     "std",
+    "secp256k1"
 ] }
 reth-codecs = { git = "https://github.com/lita-xyz/reth", branch = "1.1.1-delendum", default-features = false }
 reth-consensus = { git = "https://github.com/lita-xyz/reth", branch = "1.1.1-delendum", default-features = false }
