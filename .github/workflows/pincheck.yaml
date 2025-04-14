@@ -46,7 +46,7 @@ jobs:
           sudo mkdir -p /home/runner/.local/bin
           sudo chown $(whoami):users /home/runner/.local/bin
           sudo chown $(whoami):users /valida-toolchain
-          ./configure-build-install.sh
+          ./configure-build-install.sh --release-toolchain
           ./install-rust.sh  
           # store built Valida commit hash for future reference
           echo `git rev-parse HEAD` > .valida-pin
