@@ -2988,6 +2988,7 @@ dependencies = [
  "once_cell",
  "revm-primitives 9.0.2",
  "ripemd",
+ "secp256k1",
  "sha2",
  "substrate-bn",
 ]
