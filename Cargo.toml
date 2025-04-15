@@ -141,5 +141,5 @@ proptest = { git = "https://github.com/lita-xyz/proptest", branch = "1.5.0-valid
 pprof = { git = "https://github.com/lita-xyz/pprof-rs", branch = "0.13.0-valida" }
 alloy-primitives = { git = "https://github.com/lita-xyz/core" }
 alloy-chains = { git = "https://github.com/lita-xyz/chains", branch = "ljr-fix-hex" }
-secp256k1 = { git = "https://github.com/lita-xyz/rust-secp256k1.git", rev = "19576c784934909efa495bb124009bb0795d94b9" }
+secp256k1 = { git = "https://github.com/lita-xyz/rust-secp256k1.git", rev = "db33e9948674fb5f28a333cbd063fb8b89601dbf" }
 

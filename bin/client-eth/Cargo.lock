@@ -3246,7 +3246,7 @@ dependencies = [
 [[package]]
 name = "secp256k1"
 version = "0.29.1"
-source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=19576c784934909efa495bb124009bb0795d94b9#19576c784934909efa495bb124009bb0795d94b9"
+source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=db33e9948674fb5f28a333cbd063fb8b89601dbf#db33e9948674fb5f28a333cbd063fb8b89601dbf"
 dependencies = [
  "rand",
  "secp256k1-sys",
@@ -3256,7 +3256,7 @@ dependencies = [
 [[package]]
 name = "secp256k1-sys"
 version = "0.10.0"
-source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=19576c784934909efa495bb124009bb0795d94b9#19576c784934909efa495bb124009bb0795d94b9"
+source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=db33e9948674fb5f28a333cbd063fb8b89601dbf#db33e9948674fb5f28a333cbd063fb8b89601dbf"
 dependencies = [
  "cc",
 ]
@@ -3869,7 +3869,7 @@ dependencies = [
 [[package]]
 name = "valida-secp256k1"
 version = "0.1.0"
-source = "git+https://github.com/lita-xyz/valida-secp256k1.git?rev=62ca23eb5bbb2e642917ef5b0d3881fcf39afb3f#62ca23eb5bbb2e642917ef5b0d3881fcf39afb3f"
+source = "git+https://github.com/lita-xyz/valida-secp256k1.git?rev=d7359dd742202fb48c38e58a5aac53186d3151fb#d7359dd742202fb48c38e58a5aac53186d3151fb"
 dependencies = [
  "const-hex",
  "ff",
