@@ -2846,9 +2846,9 @@ dependencies = [
 name = "reva-client-eth"
 version = "0.0.0"
 dependencies = [
+ "bincode",
  "log",
  "reva-client-executor",
- "serde_json",
  "tracing",
  "valida-rs",
 ]

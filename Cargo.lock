@@ -253,7 +253,7 @@ dependencies = [
  "rustc-hash",
  "serde",
  "sha3",
- "tiny-keccak 2.0.2 (git+https://github.com/lita-xyz/tiny-keccak.git)",
+ "tiny-keccak",
 ]
 
 [[package]]
@@ -424,7 +424,7 @@ dependencies = [
  "quote",
  "syn 2.0.95",
  "syn-solidity",
- "tiny-keccak 2.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tiny-keccak",
 ]
 
 [[package]]
@@ -4075,7 +4075,7 @@ dependencies = [
 [[package]]
 name = "secp256k1"
 version = "0.29.1"
-source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=19576c784934909efa495bb124009bb0795d94b9#19576c784934909efa495bb124009bb0795d94b9"
+source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=db33e9948674fb5f28a333cbd063fb8b89601dbf#db33e9948674fb5f28a333cbd063fb8b89601dbf"
 dependencies = [
  "rand",
  "secp256k1-sys",
@@ -4085,7 +4085,7 @@ dependencies = [
 [[package]]
 name = "secp256k1-sys"
 version = "0.10.0"
-source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=19576c784934909efa495bb124009bb0795d94b9#19576c784934909efa495bb124009bb0795d94b9"
+source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=db33e9948674fb5f28a333cbd063fb8b89601dbf#db33e9948674fb5f28a333cbd063fb8b89601dbf"
 dependencies = [
  "cc",
 ]
@@ -4577,15 +4577,6 @@ dependencies = [
 [[package]]
 name = "tiny-keccak"
 version = "2.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c9d3793400a45f954c52e73d068316d76b6f4e36977e3fcebb13a2721e80237"
-dependencies = [
- "crunchy",
-]
-
-[[package]]
-name = "tiny-keccak"
-version = "2.0.2"
 source = "git+https://github.com/lita-xyz/tiny-keccak.git#e06385504bbb44005df50796df6e45f8d0ef235f"
 dependencies = [
  "crunchy",
@@ -4890,7 +4881,7 @@ dependencies = [
 [[package]]
 name = "valida-secp256k1"
 version = "0.1.0"
-source = "git+https://github.com/lita-xyz/valida-secp256k1.git?rev=62ca23eb5bbb2e642917ef5b0d3881fcf39afb3f#62ca23eb5bbb2e642917ef5b0d3881fcf39afb3f"
+source = "git+https://github.com/lita-xyz/valida-secp256k1.git?rev=d7359dd742202fb48c38e58a5aac53186d3151fb#d7359dd742202fb48c38e58a5aac53186d3151fb"
 dependencies = [
  "const-hex",
  "ff",

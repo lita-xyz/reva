@@ -9,7 +9,7 @@ pub fn main() {
     let mut input = Vec::new();
     io::stdin().read_to_end(&mut input).unwrap();
 
-    let input = serde_json::de::from_slice::<ClientExecutorInput>(&input.as_slice()).unwrap();
+    let input = bincode::deserialize::<ClientExecutorInput>(&input).unwrap();
 
     // Execute the block.
     let executor = ClientExecutor;
