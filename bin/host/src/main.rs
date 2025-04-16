@@ -1,7 +1,8 @@
 use alloy_provider::ReqwestProvider;
 use clap::Parser;
 use reva_client_executor::{
-    ChainVariant, CHAIN_ID_ETH_MAINNET, CHAIN_ID_LINEA_MAINNET, CHAIN_ID_OP_MAINNET,
+    ChainVariant, CHAIN_ID_ETH_MAINNET, CHAIN_ID_LINEA_MAINNET,
+    CHAIN_ID_OP_MAINNET,
 };
 use reva_host_executor::HostExecutor;
 use std::path::Path;
@@ -63,7 +64,7 @@ async fn main() {
 
             let input_path = input_folder.join(format!("{}.bin", args.block_number));
             let mut cache_file = std::fs::File::create(input_path).unwrap();
-            bincode::serialize_into(&mut cache_file, &client_input).unwrap();
+            ciborium::into_writer(&client_input, &mut cache_file).unwrap();
         }
         None => {
             panic!("RPC URL not provided")
