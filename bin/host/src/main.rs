@@ -1,8 +1,7 @@
 use alloy_provider::ReqwestProvider;
 use clap::Parser;
 use reva_client_executor::{
-    ChainVariant, CHAIN_ID_ETH_MAINNET, CHAIN_ID_LINEA_MAINNET,
-    CHAIN_ID_OP_MAINNET,
+    ChainVariant, CHAIN_ID_ETH_MAINNET, CHAIN_ID_LINEA_MAINNET, CHAIN_ID_OP_MAINNET,
 };
 use reva_host_executor::HostExecutor;
 use std::path::Path;
