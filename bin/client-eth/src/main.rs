@@ -1,15 +1,12 @@
 #![no_main]
 valida_rs::entrypoint!(main);
 
-use reva_client_executor::{io::ClientExecutorInput, ClientExecutor, EthereumVariant};
-use std::io::{self, Read};
+use reva_client_executor::{ClientExecutor, EthereumVariant};
+use std::io::{self};
 
 pub fn main() {
     // Read the input.
-    let mut input = Vec::new();
-    io::stdin().read_to_end(&mut input).unwrap();
-
-    let input = serde_json::de::from_slice::<ClientExecutorInput>(&input.as_slice()).unwrap();
+    let input = ciborium::from_reader(io::stdin()).unwrap();
 
     // Execute the block.
     let executor = ClientExecutor;

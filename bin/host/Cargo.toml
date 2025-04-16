@@ -10,11 +10,11 @@ dotenv = "0.15.0"
 clap = { version = "4.5.7", features = ["derive", "env"] }
 serde_json.workspace = true
 serde.workspace = true
-bincode = "1.3.3"
 csv = "1.1"
 # workspace
 reva-host-executor.workspace = true
 reva-client-executor.workspace = true
+ciborium = "0.2.2"
 
 # alloy
 alloy-provider.workspace = true

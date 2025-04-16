@@ -253,7 +253,7 @@ dependencies = [
  "rustc-hash",
  "serde",
  "sha3",
- "tiny-keccak 2.0.2 (git+https://github.com/lita-xyz/tiny-keccak.git)",
+ "tiny-keccak",
 ]
 
 [[package]]
@@ -424,7 +424,7 @@ dependencies = [
  "quote",
  "syn 2.0.95",
  "syn-solidity",
- "tiny-keccak 2.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tiny-keccak",
 ]
 
 [[package]]
@@ -989,6 +989,33 @@ dependencies = [
  "num-traits",
  "serde",
  "windows-targets",
+]
+
+[[package]]
+name = "ciborium"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "42e69ffd6f0917f5c029256a24d0161db17cea3997d185db0d35926308770f0e"
+dependencies = [
+ "ciborium-io",
+ "ciborium-ll",
+ "serde",
+]
+
+[[package]]
+name = "ciborium-io"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "05afea1e0a06c9be33d539b876f1ce3692f4afea2cb41f740e7743225ed1c757"
+
+[[package]]
+name = "ciborium-ll"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "57663b653d948a338bfb3eeba9bb2fd5fcfaecb9e199e87e1eda4d9e8b240fd9"
+dependencies = [
+ "ciborium-io",
+ "half",
 ]
 
 [[package]]
@@ -1708,6 +1735,16 @@ dependencies = [
  "ff",
  "rand_core",
  "subtle",
+]
+
+[[package]]
+name = "half"
+version = "2.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "459196ed295495a68f7d7fe1d84f6c4b7ff0e21fe3017b2f283c6fac3ad803c9"
+dependencies = [
+ "cfg-if",
+ "crunchy",
 ]
 
 [[package]]
@@ -3536,7 +3573,7 @@ name = "reva"
 version = "0.1.0"
 dependencies = [
  "alloy-provider",
- "bincode",
+ "ciborium",
  "clap",
  "csv",
  "dotenv",
@@ -4075,7 +4112,7 @@ dependencies = [
 [[package]]
 name = "secp256k1"
 version = "0.29.1"
-source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=19576c784934909efa495bb124009bb0795d94b9#19576c784934909efa495bb124009bb0795d94b9"
+source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=db33e9948674fb5f28a333cbd063fb8b89601dbf#db33e9948674fb5f28a333cbd063fb8b89601dbf"
 dependencies = [
  "rand",
  "secp256k1-sys",
@@ -4085,7 +4122,7 @@ dependencies = [
 [[package]]
 name = "secp256k1-sys"
 version = "0.10.0"
-source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=19576c784934909efa495bb124009bb0795d94b9#19576c784934909efa495bb124009bb0795d94b9"
+source = "git+https://github.com/lita-xyz/rust-secp256k1.git?rev=db33e9948674fb5f28a333cbd063fb8b89601dbf#db33e9948674fb5f28a333cbd063fb8b89601dbf"
 dependencies = [
  "cc",
 ]
@@ -4577,15 +4614,6 @@ dependencies = [
 [[package]]
 name = "tiny-keccak"
 version = "2.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c9d3793400a45f954c52e73d068316d76b6f4e36977e3fcebb13a2721e80237"
-dependencies = [
- "crunchy",
-]
-
-[[package]]
-name = "tiny-keccak"
-version = "2.0.2"
 source = "git+https://github.com/lita-xyz/tiny-keccak.git#e06385504bbb44005df50796df6e45f8d0ef235f"
 dependencies = [
  "crunchy",
@@ -4890,7 +4918,7 @@ dependencies = [
 [[package]]
 name = "valida-secp256k1"
 version = "0.1.0"
-source = "git+https://github.com/lita-xyz/valida-secp256k1.git?rev=62ca23eb5bbb2e642917ef5b0d3881fcf39afb3f#62ca23eb5bbb2e642917ef5b0d3881fcf39afb3f"
+source = "git+https://github.com/lita-xyz/valida-secp256k1.git?rev=d7359dd742202fb48c38e58a5aac53186d3151fb#d7359dd742202fb48c38e58a5aac53186d3151fb"
 dependencies = [
  "const-hex",
  "ff",
