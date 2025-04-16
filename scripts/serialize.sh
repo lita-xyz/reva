@@ -1,6 +1,4 @@
-#!/usr/bin/env sh
-
-HOSTTRIPLE=x86_64-unknown-linux-gnu
+#!/usr/bin/bash
 
 rpcurl=$1
 
@@ -11,6 +9,7 @@ source "$scriptsdir/BLOCKS.sh"
 
 cd $topdir/bin/host
 
-for i in $blocks; do
-    cargo +valida run --release --target=$HOSTTRIPLE -- --rpc-url $rpcurl --chain-id 1 --block-number $i;
+for i in "${blocks[@]}"; do
+    echo "Serializing block: $i"
+    cargo run --release -- --rpc-url $rpcurl --chain-id 1 --block-number $i;
 done
