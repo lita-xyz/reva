@@ -3573,7 +3573,6 @@ name = "reva"
 version = "0.1.0"
 dependencies = [
  "alloy-provider",
- "bincode",
  "ciborium",
  "clap",
  "csv",
