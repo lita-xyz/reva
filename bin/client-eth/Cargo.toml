@@ -30,4 +30,4 @@ pprof = { git = "https://github.com/lita-xyz/pprof-rs", branch = "0.13.0-valida"
 alloy-primitives = { git = "https://github.com/lita-xyz/core" }
 alloy-chains = { git = "https://github.com/lita-xyz/chains", branch = "ljr-fix-hex" }
 secp256k1 = { git = "https://github.com/lita-xyz/rust-secp256k1.git", rev = "db33e9948674fb5f28a333cbd063fb8b89601dbf" }
-
+tiny-keccak = { git = "https://github.com/lita-xyz/tiny-keccak.git" }
