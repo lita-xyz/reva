@@ -6319,11 +6319,6 @@ version = "0.1.53"
 source = "git+https://github.com/lita-xyz/chains?branch=ljr-fix-hex#59e554e4711cc40cb399132823b83afd42548bea"
 
 [[patch.unused]]
-name = "alloy-primitives"
-version = "0.8.21"
-source = "git+https://github.com/lita-xyz/core#8bb26a2a2ff140b02a410a6bf107d5e86e2473e2"
-
-[[patch.unused]]
 name = "blst"
 version = "0.3.13"
 source = "git+https://github.com/lita-xyz/blst.git?branch=0.3.13-delendum#0b37404e47d5736ec0a051e222842a696eec7b82"
