@@ -20,11 +20,7 @@
 #![allow(dead_code)]
 
 use alloc::boxed::Box;
-use alloy_primitives::{
-    b256,
-    map::{DefaultHashBuilder, HashMap},
-    Address, B256,
-};
+use alloy_primitives::{b256, map::HashMap, B256};
 use alloy_rlp::Encodable;
 use core::{
     cell::RefCell,
@@ -38,9 +34,9 @@ use rlp::{Decodable, DecoderError, Prototype, Rlp};
 use serde::{Deserialize, Serialize};
 use thiserror::Error as ThisError;
 
-use anyhow::{Context, Result};
+use alloy_primitives::Address;
 
-use super::EthereumState;
+use super::{EthereumState, FromProofError};
 
 pub trait RlpBytes {
     /// Returns the RLP-encoding.
@@ -850,13 +846,13 @@ fn prefix_nibs(prefix: &[u8]) -> Vec<u8> {
 }
 
 /// Parses proof bytes into a vector of MPT nodes.
-pub fn parse_proof(proof: &[impl AsRef<[u8]>]) -> Result<Vec<MptNode>> {
-    Ok(proof.iter().map(MptNode::decode).collect::<Result<Vec<_>, _>>()?)
+pub fn parse_proof(proof: &[impl AsRef<[u8]>]) -> Result<Vec<MptNode>, Error> {
+    proof.iter().map(MptNode::decode).collect()
 }
 
 /// Creates a Merkle Patricia trie from an EIP-1186 proof.
 /// For inclusion proofs the returned trie contains exactly one leaf with the value.
-pub fn mpt_from_proof(proof_nodes: &[MptNode]) -> Result<MptNode> {
+pub fn mpt_from_proof(proof_nodes: &[MptNode]) -> Result<MptNode, FromProofError> {
     let mut next: Option<MptNode> = None;
     for (i, node) in proof_nodes.iter().enumerate().rev() {
         // there is nothing to replace for the last node
@@ -867,7 +863,7 @@ pub fn mpt_from_proof(proof_nodes: &[MptNode]) -> Result<MptNode> {
 
         // the next node must have a digest reference
         let MptNodeReference::Digest(ref child_ref) = replacement.reference() else {
-            panic!("node {} in proof is not referenced by hash", i + 1);
+            return Err(FromProofError::NodeNotFoundByHash(i + 1));
         };
         // find the child that references the next node
         let resolved: MptNode = match node.as_data().clone() {
@@ -877,18 +873,18 @@ pub fn mpt_from_proof(proof_nodes: &[MptNode]) -> Result<MptNode> {
                 ) {
                     *child = Box::new(replacement);
                 } else {
-                    panic!("node {} does not reference the successor", i);
+                    return Err(FromProofError::NodeHasInvalidSuccessor(i));
                 }
                 MptNodeData::Branch(children).into()
             }
             MptNodeData::Extension(prefix, child) => {
                 if !matches!(child.as_data(), MptNodeData::Digest(d) if d == child_ref) {
-                    panic!("node {} does not reference the successor", i);
+                    return Err(FromProofError::NodeHasInvalidSuccessor(i));
                 }
                 MptNodeData::Extension(prefix, Box::new(replacement)).into()
             }
             MptNodeData::Null | MptNodeData::Leaf(_, _) | MptNodeData::Digest(_) => {
-                panic!("node {} has no children to replace", i);
+                return Err(FromProofError::NodeCannotHaveChildren(i))
             }
         };
 
@@ -900,7 +896,7 @@ pub fn mpt_from_proof(proof_nodes: &[MptNode]) -> Result<MptNode> {
 }
 
 /// Verifies that the given proof is a valid proof of exclusion for the given key.
-pub fn is_not_included(key: &[u8], proof_nodes: &[MptNode]) -> Result<bool> {
+pub fn is_not_included(key: &[u8], proof_nodes: &[MptNode]) -> Result<bool, FromProofError> {
     let proof_trie = mpt_from_proof(proof_nodes).unwrap();
     // for valid proofs, the get must not fail
     let value = proof_trie.get(key).unwrap();
@@ -966,19 +962,19 @@ pub fn shorten_node_path(node: &MptNode) -> Vec<MptNode> {
 pub fn proofs_to_tries(
     state_root: B256,
     proofs: &HashMap<Address, AccountProof>,
-) -> Result<EthereumState> {
+) -> Result<EthereumState, FromProofError> {
     // if no addresses are provided, return the trie only consisting of the state root
     if proofs.is_empty() {
         return Ok(EthereumState {
             state_trie: node_from_digest(state_root),
-            storage_tries: HashMap::with_hasher(DefaultHashBuilder::default()),
+            storage_tries: HashMap::with_hasher(Default::default()),
         });
     }
 
     let mut storage: HashMap<B256, MptNode> =
-        HashMap::with_capacity_and_hasher(proofs.len(), DefaultHashBuilder::default());
+        HashMap::with_capacity_and_hasher(proofs.len(), Default::default());
 
-    let mut state_nodes = HashMap::with_hasher(DefaultHashBuilder::default());
+    let mut state_nodes = HashMap::with_hasher(Default::default());
     let mut state_root_node = MptNode::default();
     for (address, proof) in proofs {
         let proof_nodes = parse_proof(&proof.proof).unwrap();
@@ -1001,7 +997,7 @@ pub fn proofs_to_tries(
             continue;
         }
 
-        let mut storage_nodes = HashMap::with_hasher(DefaultHashBuilder::default());
+        let mut storage_nodes = HashMap::with_hasher(Default::default());
         let mut storage_root_node = MptNode::default();
         for storage_proof in &proof.storage_proofs {
             let proof_nodes = parse_proof(&storage_proof.proof).unwrap();
@@ -1019,12 +1015,22 @@ pub fn proofs_to_tries(
 
         // create the storage trie, from all the relevant nodes
         let storage_trie = resolve_nodes(&storage_root_node, &storage_nodes);
-        assert_eq!(storage_trie.hash(), storage_root);
+        let storage_trie_hash = storage_trie.hash();
+        if storage_trie_hash != storage_root {
+            return Err(FromProofError::MismatchedStorageRoot(
+                *address,
+                storage_trie_hash,
+                storage_root,
+            ));
+        }
 
         storage.insert(B256::from(&keccak(address)), storage_trie);
     }
     let state_trie = resolve_nodes(&state_root_node, &state_nodes);
-    assert_eq!(state_trie.hash(), state_root);
+    let state_trie_hash = state_trie.hash();
+    if state_trie_hash != state_root {
+        return Err(FromProofError::MismatchedStateRoot(state_trie_hash, state_root));
+    }
 
     Ok(EthereumState { state_trie, storage_tries: storage })
 }
@@ -1033,19 +1039,19 @@ pub fn transition_proofs_to_tries(
     state_root: B256,
     parent_proofs: &HashMap<Address, AccountProof>,
     proofs: &HashMap<Address, AccountProof>,
-) -> Result<EthereumState> {
+) -> Result<EthereumState, FromProofError> {
     // if no addresses are provided, return the trie only consisting of the state root
     if parent_proofs.is_empty() {
         return Ok(EthereumState {
             state_trie: node_from_digest(state_root),
-            storage_tries: HashMap::with_hasher(DefaultHashBuilder::default()),
+            storage_tries: HashMap::with_hasher(Default::default()),
         });
     }
 
     let mut storage: HashMap<B256, MptNode> =
-        HashMap::with_capacity_and_hasher(parent_proofs.len(), DefaultHashBuilder::default());
+        HashMap::with_capacity_and_hasher(parent_proofs.len(), Default::default());
 
-    let mut state_nodes = HashMap::with_hasher(DefaultHashBuilder::default());
+    let mut state_nodes = HashMap::with_hasher(Default::default());
     let mut state_root_node = MptNode::default();
     for (address, proof) in parent_proofs {
         let proof_nodes = parse_proof(&proof.proof).unwrap();
@@ -1073,7 +1079,7 @@ pub fn transition_proofs_to_tries(
             continue;
         }
 
-        let mut storage_nodes = HashMap::with_hasher(DefaultHashBuilder::default());
+        let mut storage_nodes = HashMap::with_hasher(Default::default());
         let mut storage_root_node = MptNode::default();
         for storage_proof in &proof.storage_proofs {
             let proof_nodes = parse_proof(&storage_proof.proof).unwrap();
@@ -1095,12 +1101,23 @@ pub fn transition_proofs_to_tries(
         }
         // create the storage trie, from all the relevant nodes
         let storage_trie = resolve_nodes(&storage_root_node, &storage_nodes);
-        assert_eq!(storage_trie.hash(), storage_root);
+        let storage_trie_hash = storage_trie.hash();
+        if storage_trie_hash != storage_root {
+            return Err(FromProofError::MismatchedStorageRoot(
+                *address,
+                storage_trie_hash,
+                storage_root,
+            ));
+        }
 
         storage.insert(B256::from(&keccak(address)), storage_trie);
     }
+
     let state_trie = resolve_nodes(&state_root_node, &state_nodes);
-    assert_eq!(state_trie.hash(), state_root);
+    let state_trie_hash = state_trie.hash();
+    if state_trie_hash != state_root {
+        return Err(FromProofError::MismatchedStateRoot(state_trie_hash, state_root));
+    }
 
     Ok(EthereumState { state_trie, storage_tries: storage })
 }
@@ -1110,9 +1127,9 @@ fn add_orphaned_leafs(
     key: impl AsRef<[u8]>,
     proof: &[impl AsRef<[u8]>],
     nodes_by_reference: &mut HashMap<MptNodeReference, MptNode>,
-) -> Result<()> {
+) -> Result<(), FromProofError> {
     if !proof.is_empty() {
-        let proof_nodes = parse_proof(proof).context("invalid proof encoding")?;
+        let proof_nodes = parse_proof(proof)?;
         if is_not_included(&keccak(key), &proof_nodes)? {
             // add the leaf node to the nodes
             let leaf = proof_nodes.last().unwrap();

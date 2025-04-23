@@ -6,33 +6,37 @@ edition = "2021"
 [dependencies]
 tokio.workspace = true
 url.workspace = true
+tracing-subscriber = "0.3.18"
 dotenv = "0.15.0"
 clap = { version = "4.5.7", features = ["derive", "env"] }
-serde_json.workspace = true
+eyre = "0.6.12"
 serde.workspace = true
+strum = "0.26"
 csv = "1.1"
+
 # workspace
-reva-host-executor.workspace = true
 reva-client-executor.workspace = true
-ciborium = "0.2.2"
+reva-host-executor.workspace = true
+reva-primitives.workspace = true
+reva-provider.workspace = true
 
 # alloy
+alloy-chains.workspace = true
+alloy-primitives.workspace = true
+alloy-consensus.workspace = true
 alloy-provider.workspace = true
 
+
 # reth 
-reth-primitives.workspace = true
+reth-primitives-traits.workspace = true
 
-[features]
-default = []
+# revm
+revm-bytecode.workspace = true
 
-[patch.crates-io]
-wait-timeout = { git = "https://github.com/lita-xyz/wait-timeout", branch = "0.2.0-valida" }
-rusty-fork = { git = "https://github.com/lita-xyz/rusty-fork", branch = "0.3.0-valida" }
-is-terminal = { git = "https://github.com/lita-xyz/is-terminal", branch = "0.4.13-valida" }
-cc = { git = "https://github.com/lita-xyz/cc-rs.git", branch = "1.1.18-delendum" }
-blst = { git = "https://github.com/lita-xyz/blst.git", branch = "0.3.13-delendum" }
-c-kzg = { git = "https://github.com/lita-xyz/c-kzg-4844.git", branch = "1.0.3-delendum" }
-zstd-sys = { git = "https://github.com/lita-xyz/zstd-rs.git", branch = "zstd-sys-2.0.13-delendum" }
-proptest = { git = "https://github.com/lita-xyz/proptest", branch = "1.5.0-valida" }
-pprof = { git = "https://github.com/lita-xyz/pprof-rs", branch = "0.13.0-valida" }
-alloy-primitives = { git = "https://github.com/lewis1revill/core", branch = "0.8.15-valida" }
+[dev-dependencies]
+alloy-network.workspace = true
+reva-client-executor.workspace = true
+serde_json = "1.0"
+thousands = "0.2.0"
+madato = "0.7.0"
+

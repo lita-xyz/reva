@@ -1,5 +1,5 @@
 use alloy_rpc_types::EIP1186AccountProofResponse;
-use reth_primitives::Account;
+use reth_primitives_traits::Account;
 use reth_trie::{AccountProof, StorageProof, EMPTY_ROOT_HASH};
 
 /// Converts an [EIP1186AccountProofResponse] to an [AccountProof].
@@ -16,7 +16,7 @@ pub fn eip1186_proof_to_account_proof(proof: EIP1186AccountProofResponse) -> Acc
             let key = storage_proof.key;
             let value = storage_proof.value;
             let proof = storage_proof.proof;
-            let mut sp = StorageProof::new(key.0);
+            let mut sp = StorageProof::new(key.as_b256());
             sp.value = value;
             sp.proof = proof;
             sp
