@@ -5,10 +5,10 @@ description = ""
 edition = "2021"
 
 [dependencies]
-serde_json = "1.0.94"
+bincode = "1.3.3"
 
 # workspace
-reva-client-executor = { path = "../../crates/executor/client" }
+reva-client-executor = { path = "../../crates/executor/client", features = ["optimism"] }
 
 # valida-rs
 valida-rs = { git = "https://github.com/lita-xyz/valida-rs", branch = "main" }
@@ -27,4 +27,3 @@ c-kzg = { git = "https://github.com/lita-xyz/c-kzg-4844.git", branch = "1.0.3-de
 zstd-sys = { git = "https://github.com/lita-xyz/zstd-rs.git", branch = "zstd-sys-2.0.13-delendum" }
 proptest = { git = "https://github.com/lita-xyz/proptest", branch = "1.5.0-valida" }
 pprof = { git = "https://github.com/lita-xyz/pprof-rs", branch = "0.13.0-valida" }
-alloy-primitives = { git = "https://github.com/lewis1revill/core", branch = "0.8.15-valida" }
