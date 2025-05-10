@@ -152,7 +152,7 @@ pub enum MptNodeData {
     Digest(B256),
 }
 
-/// Represents the ways in which one node can reference another node inside the sparse
+/// Represents how one node can reference another node inside the sparse
 /// Merkle Patricia Trie (MPT).
 ///
 /// Nodes in the MPT can reference other nodes either directly through their byte
@@ -546,7 +546,7 @@ impl MptNode {
                     return Ok(false);
                 }
 
-                // an extension can only point to a branch or a digest; since it's sub trie was
+                // an extension can only point to a branch or a digest; since its sub-trie was
                 // modified, we need to make sure that this property still holds
                 match &mut child.data {
                     // if the child is empty, remove the extension
