@@ -1,18 +1,19 @@
 #![no_main]
 valida_rs::entrypoint!(main);
 
-use reva_client_executor::{io::ClientExecutorInput, ClientExecutor, OptimismVariant};
-use std::io::{self, Read};
+use reva_client_executor::{executor::OpClientExecutor, io::OpClientExecutorInput};
+use std::{
+    io::{self},
+    sync::Arc,
+};
 
 pub fn main() {
     // Read the input.
-    let mut input = Vec::new();
-    io::stdin().read_to_end(&mut input).unwrap();
-    let input = serde_json::de::from_slice::<ClientExecutorInput>(&input.as_slice()).unwrap();
+    let input = bincode::deserialize_from::<_, OpClientExecutorInput>(io::stdin()).unwrap();
 
     // Execute the block.
-    let executor = ClientExecutor;
-    let header = executor.execute::<OptimismVariant>(input).expect("failed to execute client");
+    let executor = OpClientExecutor::optimism(Arc::new((&input.genesis).try_into().unwrap()));
+    let header = executor.execute(input).expect("failed to execute client");
     let block_hash = header.hash_slow();
 
     // Commit the block hash.
