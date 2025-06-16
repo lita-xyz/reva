@@ -62,6 +62,11 @@ jobs:
           key: valida-latest
           path: /valida-toolchain/
 
+      - name: Setup interactive ssh session
+        uses: Warpbuilds/action-debugger@v1.3
+        with:
+          limit-access-to-actor: false
+
       - name: "Link toolchain"
         run: |
           echo "Restored Valida toolchain from cache with commit hash: "`cat .valida-pin`
