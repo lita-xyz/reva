@@ -26,7 +26,6 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: |
-            ${{ secrets.ACCESS_RUST_REPO }}
             ${{ secrets.ACCESS_LLVM_REPO }}
 
       - name: Install dependencies
