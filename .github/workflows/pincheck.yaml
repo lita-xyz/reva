@@ -90,6 +90,8 @@ jobs:
         run: |
           cd bin/client-eth
           cargo +valida build --release
+        env:
+          CARGO_NET_GIT_FETCH_WITH_CLI: true
 
       - name: Clear failing build
         if: steps.reva.outcome=='failure' || steps.eth.outcome=='failure'
