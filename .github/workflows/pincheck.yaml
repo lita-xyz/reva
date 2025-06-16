@@ -75,6 +75,8 @@ jobs:
         run: |
           cd bin/host
           cargo +valida build --target=x86_64-unknown-linux-gnu --release
+        env:
+          CARGO_NET_GIT_FETCH_WITH_CLI: true
 
       - name: Build Eth-client
         id: eth
@@ -82,6 +84,8 @@ jobs:
         run: |
           cd bin/client-eth
           cargo +valida build --release
+        env:
+          CARGO_NET_GIT_FETCH_WITH_CLI: true
 
       - name: Clear failing build
         if: steps.reva.outcome=='failure' || steps.eth.outcome=='failure'
