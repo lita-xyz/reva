@@ -65,7 +65,7 @@ jobs:
       - name: "Link toolchain"
         run: |
           echo "Restored Valida toolchain from cache with commit hash: "`cat .valida-pin`
-          ./install-rust.sh  
+          rustup toolchain link valida /valida-toolchain/rust-toolchain
 
       - name: "Build Reva"
         run: |
