@@ -14,11 +14,25 @@ jobs:
 
     steps:
     # Build latest Valida
+
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
           repository: lita-xyz/valida-toolchain
           ssh-key: ${{ secrets.ACCESS_VALIDA_TOOLCHAIN }}
+
+
+      - name: Set up SSH Agent with deploy keys
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: |
+            ${{ secrets.ACCESS_RUST_REPO }}
+            ${{ secrets.ACCESS_LLVM_REPO }}
+
+      - name: Fetch submodules
+        run: |
+          git submodule init
+          git submodule update --recursive
 
       - name: Install dependencies
         run: |
