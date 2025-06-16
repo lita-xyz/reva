@@ -69,6 +69,12 @@ jobs:
       - name: Checkout Reva repository
         uses: actions/checkout@v4
 
+    
+      - name: Setup interactive ssh session
+        uses: Warpbuilds/action-debugger@v1.3
+        with:
+          limit-access-to-actor: false
+
       - name: Build Reva
         id: reva
         continue-on-error: true
