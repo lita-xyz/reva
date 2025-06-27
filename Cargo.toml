@@ -142,3 +142,4 @@ pprof = { git = "https://github.com/lita-xyz/pprof-rs", branch = "0.13.0-valida"
 alloy-chains = { git = "https://github.com/lita-xyz/chains", branch = "ljr-fix-hex" }
 secp256k1 = { git = "https://github.com/lita-xyz/rust-secp256k1.git", rev = "dcccf7bb5a54da66a130d0d5b2181e88d85fcfb4" }
 tiny-keccak = { git = "https://github.com/lita-xyz/tiny-keccak.git" }
+getrandom = { git = "https://github.com/lita-xyz/getrandom.git", branch = "v0.2.16-valida" }
