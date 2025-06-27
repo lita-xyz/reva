@@ -1,6 +1,3 @@
-#![no_main]
-valida_rs::entrypoint!(main);
-
 use reva_client_executor::{executor::EthClientExecutor, io::EthClientExecutorInput};
 use std::{
     io::{self},

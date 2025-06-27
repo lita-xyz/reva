@@ -1640,9 +1640,8 @@ dependencies = [
 
 [[package]]
 name = "getrandom"
-version = "0.2.15"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4567c8db10ae91089c99af84c68c38da3ec2f087c3f82960bcdbf3656b6f4d7"
+version = "0.2.16"
+source = "git+https://github.com/lita-xyz/getrandom.git?branch=v0.2.16-valida#2113882226b0b2c660cace0715ec97870adb7101"
 dependencies = [
  "cfg-if",
  "libc",
@@ -2754,7 +2753,7 @@ version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
- "getrandom 0.2.15",
+ "getrandom 0.2.16",
 ]
 
 [[package]]
@@ -3266,7 +3265,6 @@ dependencies = [
  "log",
  "reva-client-executor",
  "tracing",
- "valida-rs",
 ]
 
 [[package]]
@@ -4019,7 +4017,7 @@ checksum = "9a8a559c81686f576e8cd0290cd2a24a2a9ad80c98b3478856500fcbd7acd704"
 dependencies = [
  "cfg-if",
  "fastrand",
- "getrandom 0.2.15",
+ "getrandom 0.2.16",
  "once_cell",
  "rustix",
  "windows-sys",
@@ -4327,16 +4325,6 @@ checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
 name = "valida-intrinsics"
 version = "0.1.0"
 source = "git+https://github.com/lita-xyz/valida-intrinsics.git?rev=9a954d056eedec7d4506729cca84dbcc226c47c7#9a954d056eedec7d4506729cca84dbcc226c47c7"
-
-[[package]]
-name = "valida-rs"
-version = "0.1.0"
-source = "git+https://github.com/lita-xyz/valida-rs?branch=main#5b2288a5fa50bb2063dc181220476b4b0768d8d2"
-dependencies = [
- "getrandom 0.2.15",
- "once_cell",
- "rand 0.8.5",
-]
 
 [[package]]
 name = "valida-secp256k1"
