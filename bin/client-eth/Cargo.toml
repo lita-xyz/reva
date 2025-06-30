@@ -16,10 +16,6 @@ tracing = { version = "0.1", features = ["max_level_off", "release_max_level_off
 
 [patch.crates-io]
 foldhash = { git = "https://github.com/lita-xyz/foldhash", branch = "v0.1.4-valida" }
-wait-timeout = { git = "https://github.com/lita-xyz/wait-timeout", branch = "0.2.0-valida" }
-rusty-fork = { git = "https://github.com/lita-xyz/rusty-fork", branch = "0.3.0-valida" }
-zstd-sys = { git = "https://github.com/lita-xyz/zstd-rs.git", branch = "zstd-sys-2.0.13-delendum" }
-proptest = { git = "https://github.com/lita-xyz/proptest", branch = "1.5.0-valida" }
 secp256k1 = { git = "https://github.com/lita-xyz/rust-secp256k1.git", rev = "dcccf7bb5a54da66a130d0d5b2181e88d85fcfb4" }
 tiny-keccak = { git = "https://github.com/lita-xyz/tiny-keccak.git" }
 getrandom = { git = "https://github.com/lita-xyz/getrandom.git", branch = "v0.2.16-valida" }
