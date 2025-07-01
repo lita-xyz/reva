@@ -2660,8 +2660,9 @@ dependencies = [
 
 [[package]]
 name = "proptest"
-version = "1.5.0"
-source = "git+https://github.com/lita-xyz/proptest?branch=1.5.0-valida#58ea8c0991cfb2a579a2dab778a3b5e252017de2"
+version = "1.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "14cae93065090804185d3b75f0bf93b8eeda30c7a9b4a33d3bdb3988d6229e50"
 dependencies = [
  "bit-set",
  "bit-vec",
@@ -3625,7 +3626,8 @@ checksum = "f7c45b9784283f1b2e7fb61b42047c2fd678ef0960d4f6f1eba131594cc369d4"
 [[package]]
 name = "rusty-fork"
 version = "0.3.0"
-source = "git+https://github.com/lita-xyz/rusty-fork?branch=0.3.0-valida#cd0553d1b9863acae3e87a346d4de3f7127b24b7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cb3dcc6e454c328bb824492db107ab7c0ae8fcffe4ad210136ef014458c1bc4f"
 dependencies = [
  "fnv",
  "quick-error",
@@ -4352,8 +4354,9 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
 name = "wait-timeout"
-version = "0.2.0"
-source = "git+https://github.com/lita-xyz/wait-timeout?branch=0.2.0-valida#3e94589e36c649197155e3635ee0735e2f1d3f7b"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "09ac3b126d3914f9849036f826e054cbabdc8519970b8998ddaf3b5bd3c65f11"
 dependencies = [
  "libc",
 ]
@@ -4707,8 +4710,9 @@ dependencies = [
 
 [[package]]
 name = "zstd-sys"
-version = "2.0.13+zstd.1.5.6"
-source = "git+https://github.com/lita-xyz/zstd-rs.git?branch=zstd-sys-2.0.13-delendum#c8dcd227cb5bb8e02fd786bdac4a3cb0ef7c4c0d"
+version = "2.0.15+zstd.1.5.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eb81183ddd97d0c74cedf1d50d85c8d08c1b8b68ee863bdee9e706eedba1a237"
 dependencies = [
  "cc",
  "pkg-config",
