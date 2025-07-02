@@ -130,6 +130,7 @@ rustdoc.all = "warn"
 
 [patch.crates-io]
 foldhash = { git = "https://github.com/lita-xyz/foldhash", branch = "v0.1.4-valida" }
-secp256k1 = { git = "https://github.com/lita-xyz/rust-secp256k1.git", rev = "dcccf7bb5a54da66a130d0d5b2181e88d85fcfb4" }
+#TODO: enable once secp256k1 opcodes are enabled on the prover side
+#secp256k1 = { git = "https://github.com/lita-xyz/rust-secp256k1.git", rev = "dcccf7bb5a54da66a130d0d5b2181e88d85fcfb4" }
 tiny-keccak = { git = "https://github.com/lita-xyz/tiny-keccak.git" }
 getrandom = { git = "https://github.com/lita-xyz/getrandom.git", branch = "v0.2.16-valida" }
